@@ -357,8 +357,8 @@ const DATA = {
     nombre: "Modena (Aluar)",
     tipos: {
       corrediza: {
-        nombre: "Ventana corrediza — vidrio simple, 2 hojas",
-        nota: "Incluye mosquitero y parante central (2 piezas, mismo H-79 que el lateral) — perfil 6207, que el listado de Aluar marca para \"ventana y puerta\" corrediza, aunque la tabla de corte base solo lo mostraba en la puerta.",
+        nombre: "Ventana/Puerta corrediza — vidrio simple, 2 hojas",
+        nota: "Incluye mosquitero y parante central (2 piezas, mismo H-79 que el lateral) — perfil 6207. Ventana y puerta unificadas: usan el mismo corte.",
         piezas: [
           {perfil:"6205", desc:"Jambas premarco", formula:"H+36", angulo:"45-45", cant:2},
           {perfil:"6205", desc:"Umbral y dintel premarco", formula:"A+36", angulo:"45-45", cant:2},
@@ -374,29 +374,9 @@ const DATA = {
           {perfil:"6256", desc:"Travesaño mosquitero", formula:"(A/2)-70", angulo:"90-90", cant:1},
         ]
       },
-      corrediza_puerta: {
-        nombre: "Puerta corrediza — vidrio simple, 2 hojas",
-        nota: "La jamba de tapa premarco de la puerta no tiene fórmula fija en el manual de Aluar (queda \"(•) medir en la abertura armada\") — medila en obra en vez de calcularla acá.",
-        piezas: [
-          {perfil:"6205", desc:"Jambas premarco", formula:"H+36", angulo:"45-45", cant:2},
-          {perfil:"6205", desc:"Umbral y dintel premarco", formula:"A+36", angulo:"45-45", cant:2},
-          {perfil:"6206", desc:"Dintel tapa premarco", formula:"A+53", angulo:"45-45", cant:1},
-          {perfil:"6201", desc:"Jambas marco", formula:"H", angulo:"90-90", cant:2},
-          {perfil:"6200", desc:"Umbral y dintel marco", formula:"A-42", angulo:"90-90", cant:2},
-          {perfil:"6203", desc:"Parante lateral de hoja", formula:"H-79", angulo:"90-90", cant:2},
-          {perfil:"6204", desc:"Cabezal de hoja", formula:"(A/2)-24", angulo:"90-90", cant:2},
-          {perfil:"6207", desc:"Parante central", formula:"H-79", angulo:"90-90", cant:1},
-          {perfil:"6208", desc:"Parante central con tirador", formula:"H-79", angulo:"90-90", cant:1},
-          {perfil:"6209", desc:"Zócalo alto", formula:"(A/2)-24", angulo:"90-90", cant:2},
-          {perfil:"6239", desc:"Travesaño de hoja", formula:"(A/2)-67", angulo:"90-90", cant:2},
-          {perfil:"6255", desc:"Jambas mosquitero", formula:"H-88", angulo:"45-45", cant:2},
-          {perfil:"6255", desc:"Zócalo y cabezal mosquitero", formula:"(A/2)-7", angulo:"45-45", cant:2},
-          {perfil:"6256", desc:"Travesaño mosquitero", formula:"(A/2)-70", angulo:"90-90", cant:1},
-        ]
-      },
       corrediza_dvh: {
-        nombre: "Ventana corrediza — DVH (doble vidriado), 2 hojas",
-        nota: "Misma estructura que vidrio simple, con hoja reforzada para DVH. Incluye parante central (2 piezas, mismo H-79 que el lateral) — perfil 6250, marcado en el listado de Aluar para \"ventana y puerta\" corrediza DVH.",
+        nombre: "Ventana/Puerta corrediza — DVH (doble vidriado), 2 hojas",
+        nota: "Misma estructura que vidrio simple, con hoja reforzada para DVH. Incluye parante central (2 piezas, mismo H-79 que el lateral) — perfil 6250. Ventana y puerta unificadas: usan el mismo corte.",
         piezas: [
           {perfil:"6205", desc:"Jambas premarco", formula:"H+36", angulo:"45-45", cant:2},
           {perfil:"6205", desc:"Umbral y dintel premarco", formula:"A+36", angulo:"45-45", cant:2},
@@ -407,26 +387,6 @@ const DATA = {
           {perfil:"6248", desc:"Parante lateral de hoja DVH", formula:"H-79", angulo:"90-90", cant:2},
           {perfil:"6250", desc:"Parante central de hoja DVH", formula:"H-79", angulo:"90-90", cant:2},
           {perfil:"6249", desc:"Zócalo y cabezal de hoja DVH", formula:"(A/2)-24", angulo:"90-90", cant:4},
-          {perfil:"6255", desc:"Jambas mosquitero", formula:"H-88", angulo:"45-45", cant:2},
-          {perfil:"6255", desc:"Zócalo y cabezal mosquitero", formula:"(A/2)-7", angulo:"45-45", cant:2},
-          {perfil:"6256", desc:"Travesaño mosquitero", formula:"(A/2)-70", angulo:"90-90", cant:1},
-        ]
-      },
-      corrediza_puerta_dvh: {
-        nombre: "Puerta corrediza — DVH (doble vidriado), 2 hojas",
-        nota: "Igual que la puerta de vidrio simple pero con perfiles DVH (6248/6249/6250/6251/6252/6253). La jamba de tapa premarco tampoco tiene fórmula fija acá (\"(•) medir en la abertura armada\") — medila en obra.",
-        piezas: [
-          {perfil:"6205", desc:"Jambas premarco", formula:"H+36", angulo:"45-45", cant:2},
-          {perfil:"6205", desc:"Umbral y dintel premarco", formula:"A+36", angulo:"45-45", cant:2},
-          {perfil:"6206", desc:"Dintel tapa premarco", formula:"A+53", angulo:"45-45", cant:1},
-          {perfil:"6201", desc:"Jambas marco", formula:"H", angulo:"90-90", cant:2},
-          {perfil:"6200", desc:"Umbral y dintel marco", formula:"A-42", angulo:"90-90", cant:2},
-          {perfil:"6248", desc:"Parante lateral de hoja DVH", formula:"H-79", angulo:"90-90", cant:2},
-          {perfil:"6249", desc:"Cabezal de hoja DVH", formula:"(A/2)-24", angulo:"90-90", cant:2},
-          {perfil:"6250", desc:"Parante central DVH", formula:"H-79", angulo:"90-90", cant:1},
-          {perfil:"6251", desc:"Parante central con tirador DVH", formula:"H-79", angulo:"90-90", cant:1},
-          {perfil:"6252", desc:"Zócalo alto DVH", formula:"(A/2)-24", angulo:"90-90", cant:2},
-          {perfil:"6253", desc:"Travesaño de hoja DVH", formula:"(A/2)-67", angulo:"90-90", cant:2},
           {perfil:"6255", desc:"Jambas mosquitero", formula:"H-88", angulo:"45-45", cant:2},
           {perfil:"6255", desc:"Zócalo y cabezal mosquitero", formula:"(A/2)-7", angulo:"45-45", cant:2},
           {perfil:"6256", desc:"Travesaño mosquitero", formula:"(A/2)-70", angulo:"90-90", cant:1},
