@@ -1323,10 +1323,10 @@ function optimizar(){
     });
   });
 
-  // Metros lineales totales de perfil que necesita la obra completa (todas las piezas de
-  // todas las aberturas y perfiles sumadas), independiente de cómo se acomoden en las barras.
+  // Metros lineales totales de las VENTANAS de la obra: perímetro del marco (A+H)×2 de
+  // cada abertura (x cantidad de aberturas iguales) — no la suma de todas las piezas/perfiles.
   let totalMLmm = 0;
-  Object.values(grupos).forEach(g=>{ g.piezas.forEach(p=>{ totalMLmm += p.medida; }); });
+  orden.forEach(item=>{ totalMLmm += 2*(item.A+item.H)*item.cantAb; });
 
   let totalBarras=0, totalDesperdicioMm=0, totalUsadoMm=0, totalCapacidadMm=0;
   let totalBarrasNuevas=0, totalBarrasStock=0, totalRetazosStock=0;
