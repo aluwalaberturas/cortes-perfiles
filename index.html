@@ -70,8 +70,9 @@
   button.print-btn:hover{border-color:var(--accent);}
   .print-header{display:none;}
   #etiquetasPrint{display:none;}
-  .etiqueta-row{padding:6px 4px;border-bottom:1px dashed #999;font-size:14px;}
+  .etiqueta-row{padding:6px 4px;border-bottom:1px dashed #999;font-size:13px;break-inside:avoid;}
   .etiqueta-row b{font-weight:700;}
+  .etiqueta-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:middle;}
   @media print{
     :root{ --bg:#fff; --panel:#fff; --panel2:#f4f4f4; --border:#ccc; --text:#000; --muted:#555; }
     *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important;}
@@ -83,7 +84,7 @@
     .card{box-shadow:none;}
     main{max-width:none;padding:0;}
     body.modo-etiquetas main{display:none !important;}
-    body.modo-etiquetas #etiquetasPrint{display:block !important;}
+    body.modo-etiquetas #etiquetasPrint{display:grid !important;grid-template-columns:1fr 1fr;column-gap:18px;}
   }
 </style>
 </head>
@@ -1503,7 +1504,7 @@ function imprimirEtiquetas(){
     item.filas.forEach(f=>{
       if(filtroPerfilesOcultos.has(f.perfil)) return;
       for(let i=0;i<f.cantTotal;i++){
-        html += `<div class="etiqueta-row"><b>${etiqueta}</b> — ${f.desc} — <b>${f.medida}mm</b></div>`;
+        html += `<div class="etiqueta-row"><span class="etiqueta-dot" style="background:${colorForOrden(idx)};"></span><b>${etiqueta}</b> — ${f.desc} — <b>${f.medida}mm</b></div>`;
       }
     });
   });
