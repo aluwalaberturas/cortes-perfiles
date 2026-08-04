@@ -129,7 +129,6 @@
   <button class="active" data-tab="calc">1 · Calcular medidas</button>
   <button data-tab="lista">2 · Lista de corte <span id="listaCount" class="muted"></span></button>
   <button data-tab="optim">3 · Optimizar barras</button>
-  <button data-tab="stock">4 · Stock</button>
 </nav>
 
 <main>
@@ -261,88 +260,12 @@
         </div>
         <div class="field">
           <label>&nbsp;</label>
-          <label class="check-label" style="padding:9px 0;"><input type="checkbox" id="usarStock" checked> Usar stock disponible</label>
-        </div>
-        <div class="field">
-          <label>&nbsp;</label>
           <button class="primary" onclick="optimizar()">Optimizar barras</button>
         </div>
       </div>
-      <div class="note">El largo real de barra en Aluar varía según perfil (hasta ~6050mm según decís). Por ahora se usa 6000mm parejo para todos los perfiles — ajustalo acá si querés probar otro valor. Con "Usar stock disponible" tildado, primero se usan los retazos y barras que cargaste en la pestaña 4, y recién después se piden barras nuevas. Cualquier sobra ≥ al "retazo mínimo aprovechable" queda anotada para volver al stock cuando confirmes el corte.</div>
+      <div class="note">El largo real de barra en Aluar varía según perfil (hasta ~6050mm según decís). Por ahora se usa 6000mm parejo para todos los perfiles — ajustalo acá si querés probar otro valor.</div>
     </div>
     <div id="optimResults"></div>
-  </div>
-
-  <!-- TAB 4: STOCK -->
-  <div class="tab" id="tab-stock">
-    <div class="card no-print">
-      <h3 style="margin:0 0 12px;">Agregar stock</h3>
-      <div class="row">
-        <div class="field">
-          <label>Línea</label>
-          <select id="stockLinea">
-            <option value="modena">Modena (Aluar)</option>
-            <option value="actual">Actual (Metales del Talar)</option>
-            <option value="a30">A30 New (Aluar)</option>
-            <option value="massr60">Mass R60 (Metales del Talar)</option>
-          </select>
-        </div>
-        <div class="field" style="min-width:260px;">
-          <label>Perfil</label>
-          <select id="stockPerfil"></select>
-        </div>
-        <div class="field">
-          <label>Color / terminación</label>
-          <select id="stockColor">
-            <option value="blanco">Blanco</option>
-            <option value="negro">Negro</option>
-            <option value="anodizado">Anodizado</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Material</label>
-          <select id="stockMaterial">
-            <option value="virgen">Virgen</option>
-            <option value="reciclado">Reciclado</option>
-            <option value="tocho">Tocho</option>
-          </select>
-        </div>
-      </div>
-      <hr class="sep">
-      <div class="row">
-        <div class="field">
-          <label>Cantidad de barras completas (6000mm)</label>
-          <input type="number" id="stockCantBarras" placeholder="ej: 5" min="1">
-        </div>
-        <div class="field">
-          <label>&nbsp;</label>
-          <button class="ghost" onclick="agregarBarrasStock()">+ Agregar barras completas</button>
-        </div>
-      </div>
-      <div class="row" style="margin-top:10px;">
-        <div class="field">
-          <label>Largo del retazo (mm)</label>
-          <input type="number" id="stockLargoRetazo" placeholder="ej: 1800" min="1">
-        </div>
-        <div class="field">
-          <label>Cantidad</label>
-          <input type="number" id="stockCantRetazo" value="1" min="1">
-        </div>
-        <div class="field">
-          <label>&nbsp;</label>
-          <button class="ghost" onclick="agregarRetazoStock()">+ Agregar retazo</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3 style="margin:0 0 12px;">Stock actual</h3>
-      <table>
-        <thead><tr><th>Línea</th><th>Perfil</th><th>Descripción</th><th>Color</th><th>Material</th><th>Barras completas</th><th>Retazos</th><th></th></tr></thead>
-        <tbody id="stockBody"></tbody>
-      </table>
-      <div class="note" id="stockEmpty">Todavía no cargaste stock. Sumá barras completas o retazos arriba.</div>
-    </div>
   </div>
 
 </main>
@@ -1352,9 +1275,9 @@ function renderStockTab(){
   }).join('');
 }
 
-document.getElementById('stockLinea').addEventListener('change', poblarPerfilesStock);
-loadStock();
-poblarPerfilesStock();
+// Pestaña de Stock oculta por ahora (ver más arriba) — no se inicializa acá para no
+// depender de elementos del DOM que ya no existen. Las funciones siguen definidas por si
+// se reactiva en el futuro.
 
 /* ==================== OPTIMIZADOR DE BARRAS (First-Fit-Decreasing) ==================== */
 let ultimoStockPool = null; // snapshot de stock resultante del último plan, listo para "Confirmar corte"
@@ -1363,7 +1286,7 @@ function optimizar(){
   const largoBarra = parseFloat(document.getElementById('largoBarra').value)||6000;
   const kerf = parseFloat(document.getElementById('kerf').value)||0;
   const umbralRetazo = parseFloat(document.getElementById('umbralRetazo').value)||300;
-  const usarStock = document.getElementById('usarStock').checked;
+  const usarStock = false; // pestaña de stock oculta por ahora — ver funciones de stock más abajo, quedan listas para reactivar
 
   if(orden.length===0){
     document.getElementById('optimResults').innerHTML = '<div class="card"><p class="muted">No hay piezas cargadas. Agregá aberturas en la pestaña 1 y 2.</p></div>';
