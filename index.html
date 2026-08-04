@@ -70,9 +70,9 @@
   button.print-btn:hover{border-color:var(--accent);}
   .print-header{display:none;}
   #etiquetasPrint{display:none;}
-  .etiqueta-row{padding:6px 4px;border-bottom:1px dashed #999;font-size:13px;break-inside:avoid;}
+  .etiqueta-row{padding:14px 6px;border-bottom:1px dashed #999;font-size:17px;break-inside:avoid;}
   .etiqueta-row b{font-weight:700;}
-  .etiqueta-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:middle;}
+  .etiqueta-dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:6px;vertical-align:middle;}
   @media print{
     :root{ --bg:#fff; --panel:#fff; --panel2:#f4f4f4; --border:#ccc; --text:#000; --muted:#555; }
     *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important;}
@@ -84,6 +84,8 @@
     .card{box-shadow:none;}
     main{max-width:none;padding:0;}
     body.modo-etiquetas main{display:none !important;}
+    body.modo-etiquetas header{display:none !important;}
+    body.modo-etiquetas .print-header{display:none !important;}
     body.modo-etiquetas #etiquetasPrint{display:grid !important;grid-template-columns:1fr 1fr;column-gap:18px;}
   }
 </style>
@@ -1321,6 +1323,11 @@ function optimizar(){
     });
   });
 
+  // Metros lineales totales de perfil que necesita la obra completa (todas las piezas de
+  // todas las aberturas y perfiles sumadas), independiente de cómo se acomoden en las barras.
+  let totalMLmm = 0;
+  Object.values(grupos).forEach(g=>{ g.piezas.forEach(p=>{ totalMLmm += p.medida; }); });
+
   let totalBarras=0, totalDesperdicioMm=0, totalUsadoMm=0, totalCapacidadMm=0;
   let totalBarrasNuevas=0, totalBarrasStock=0, totalRetazosStock=0;
   const resultadosPorGrupo = [];
@@ -1414,6 +1421,7 @@ function optimizar(){
 
   let statsHtml = `
     <div class="stat-grid">
+      <div class="card"><div class="stat">${(totalMLmm/1000).toFixed(1)} m</div><div class="stat-label">ML total de la obra</div></div>
       <div class="card"><div class="stat">${totalBarras}</div><div class="stat-label">Barras totales</div></div>
       <div class="card"><div class="stat">${(totalUsadoMm/1000).toFixed(1)} m</div><div class="stat-label">Material usado</div></div>
       <div class="card"><div class="stat">${(totalDesperdicioMm/1000).toFixed(1)} m</div><div class="stat-label">Desperdicio</div></div>
