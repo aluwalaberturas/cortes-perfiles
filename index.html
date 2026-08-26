@@ -134,10 +134,13 @@
       </div>
     </div>
     <hr class="sep" style="margin:12px 0;">
-    <div class="flex-between" style="margin-bottom:8px;">
-      <span class="muted" style="font-size:12.5px;">Obras guardadas</span>
+    <div class="flex-between" style="cursor:pointer;" onclick="toggleObrasGuardadas()">
+      <span class="muted" style="font-size:12.5px;" id="obrasGuardadasToggleLabel">▸ Obras guardadas</span>
     </div>
-    <div id="obrasGuardadasBox" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+    <div id="obrasGuardadasPanel" style="display:none;margin-top:10px;">
+      <input type="text" id="obrasGuardadasBuscar" placeholder="🔍 Buscar obra por nombre..." oninput="renderObrasGuardadas()" style="width:100%;max-width:320px;margin-bottom:10px;">
+      <div id="obrasGuardadasBox" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+    </div>
   </div>
 </div>
 
@@ -1032,11 +1035,28 @@ function eliminarObraGuardada(id){
   if(!confirm(`¿Eliminar la obra guardada "${o.nombre}"? No se puede deshacer, y se borra para todos.`)) return;
   obrasCollection.doc(id).delete().catch(err=> alert('No se pudo eliminar — revisá la conexión. (' + err.message + ')'));
 }
+// Panel colapsable: arranca cerrado para no llenar la pantalla de chips — se abre al
+// tocar el título, y ahí adentro se puede buscar una obra puntual por nombre.
+let obrasGuardadasAbierto = false;
+function toggleObrasGuardadas(){
+  obrasGuardadasAbierto = !obrasGuardadasAbierto;
+  document.getElementById('obrasGuardadasPanel').style.display = obrasGuardadasAbierto ? 'block' : 'none';
+  renderObrasGuardadas();
+}
 function renderObrasGuardadas(){
+  const label = document.getElementById('obrasGuardadasToggleLabel');
+  const cuenta = obrasGuardadas.length ? ` (${obrasGuardadas.length})` : '';
+  label.textContent = (obrasGuardadasAbierto ? '▾' : '▸') + ' Obras guardadas' + cuenta;
+
   const box = document.getElementById('obrasGuardadasBox');
   if(!obrasConectado){ box.innerHTML = '<span class="muted" style="font-size:12.5px;">Conectando con la base compartida...</span>'; return; }
   if(obrasGuardadas.length===0){ box.innerHTML = '<span class="muted" style="font-size:12.5px;">Todavía no guardaste ninguna obra.</span>'; return; }
-  const ordenadas = [...obrasGuardadas].sort((a,b)=>b.fecha.localeCompare(a.fecha));
+
+  const busqueda = document.getElementById('obrasGuardadasBuscar').value.trim().toLowerCase();
+  let visibles = busqueda ? obrasGuardadas.filter(o=>o.nombre.toLowerCase().includes(busqueda)) : obrasGuardadas;
+  if(visibles.length===0){ box.innerHTML = '<span class="muted" style="font-size:12.5px;">Ninguna obra coincide con la búsqueda.</span>'; return; }
+
+  const ordenadas = [...visibles].sort((a,b)=>b.fecha.localeCompare(a.fecha));
   box.innerHTML = ordenadas.map(o=>{
     const fecha = new Date(o.fecha).toLocaleDateString('es-AR');
     return `<span class="chip">📁 ${o.nombre} — ${fecha} (${o.orden.length})
