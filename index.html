@@ -39,6 +39,7 @@
   .badge.modena{background:#2a3f5f;color:#8ec2ff;}
   .badge.actual{background:#3f2a5f;color:#c98eff;}
   .badge.a30{background:#2a5f3f;color:#8effc2;}
+  .badge.a40{background:#5f2a2a;color:#ff8e8e;}
   .badge.massr60{background:#5f3f2a;color:#ffb98e;}
   .badge.warn{background:#4a3a1a;color:var(--warn);}
   .muted{color:var(--muted);}
@@ -157,6 +158,7 @@
           <select id="linea">
             <option value="modena">Modena (Aluar)</option>
             <option value="a30">A30 New (Aluar)</option>
+            <option value="a40">A40 (Aluar)</option>
           </select>
         </div>
         <div class="field">
@@ -603,6 +605,87 @@ const DATA = {
           {perfil:"6052", desc:"Jambas hoja", formula:"H-47", angulo:"45-45", cant:2},
           {perfil:"6052", desc:"Zócalo y cabezal hoja", formula:"(A/2)-34", angulo:"45-45", cant:2},
           {perfil:"6060", desc:"Travesaño vertical", formula:"H-59", angulo:"90-90", cant:1},
+        ]
+      },
+    }
+  },
+  a40: {
+    nombre: "A40 (Aluar)",
+    tipos: {
+      corrediza: {
+        nombre: "Ventana corrediza — 2 hojas, corte 90°",
+        nota: "Verificado en el catálogo Aluar A40 Corredizas (pág. 28). Sin mosquitero — es una sección aparte del catálogo, todavía no cargada.",
+        piezas: [
+          {perfil:"8265", desc:"Jambas premarco", formula:"H+40", angulo:"45-45", cant:2},
+          {perfil:"8265", desc:"Umbral y dintel premarco", formula:"A+40", angulo:"45-45", cant:2},
+          {perfil:"8063", desc:"Jamba tapa premarco", formula:"H+58", angulo:"45-45", cant:2},
+          {perfil:"8063", desc:"Umbral y dintel tapa premarco", formula:"A+58", angulo:"45-45", cant:2},
+          {perfil:"8220", desc:"Jamba de marco", formula:"H", angulo:"90-90", cant:2},
+          {perfil:"8215", desc:"Umbral y dintel marco", formula:"A-50", angulo:"90-90", cant:2},
+          {perfil:"8248", desc:"Parante lateral de hoja", formula:"H-77", angulo:"90-90", cant:2},
+          {perfil:"8249", desc:"Parante central de hoja", formula:"H-77", angulo:"90-90", cant:2},
+          {perfil:"8253", desc:"Zócalo y cabezal de hoja", formula:"(A/2)-25", angulo:"90-90", cant:4},
+        ]
+      },
+      corrediza_dvh: {
+        nombre: "Ventana corrediza — 2 hojas, DVH, corte 90°",
+        nota: "Mismos cortes que la versión de vidrio simple, solo cambian los perfiles de hoja a DVH (8221/8216/8217).",
+        piezas: [
+          {perfil:"8265", desc:"Jambas premarco", formula:"H+40", angulo:"45-45", cant:2},
+          {perfil:"8265", desc:"Umbral y dintel premarco", formula:"A+40", angulo:"45-45", cant:2},
+          {perfil:"8063", desc:"Jamba tapa premarco", formula:"H+58", angulo:"45-45", cant:2},
+          {perfil:"8063", desc:"Umbral y dintel tapa premarco", formula:"A+58", angulo:"45-45", cant:2},
+          {perfil:"8220", desc:"Jamba de marco", formula:"H", angulo:"90-90", cant:2},
+          {perfil:"8215", desc:"Umbral y dintel marco", formula:"A-50", angulo:"90-90", cant:2},
+          {perfil:"8221", desc:"Parante lateral de hoja DVH", formula:"H-77", angulo:"90-90", cant:2},
+          {perfil:"8216", desc:"Parante central de hoja DVH", formula:"H-77", angulo:"90-90", cant:2},
+          {perfil:"8217", desc:"Zócalo y cabezal de hoja DVH", formula:"(A/2)-25", angulo:"90-90", cant:4},
+        ]
+      },
+      corrediza_puerta: {
+        nombre: "Puerta corrediza — 2 hojas, corte 90° (reforzada)",
+        nota: "Verificado en el catálogo Aluar A40 Corredizas (pág. 34) — es una tabla propia, distinta a la de ventana (no una tabla incompleta): usa H-102 en vez de H-77, y suma un parante central reforzado. La jamba de tapa premarco se ajusta según el nivel de piso terminado (\"replantear\") — medila en obra.",
+        piezas: [
+          {perfil:"8265", desc:"Jambas premarco", formula:"H+40", angulo:"45-45", cant:2},
+          {perfil:"8265", desc:"Umbral y dintel premarco", formula:"A+40", angulo:"45-45", cant:2},
+          {perfil:"8063", desc:"Dintel tapa premarco", formula:"A+58", angulo:"45-45", cant:1},
+          {perfil:"8220", desc:"Jamba de marco", formula:"H", angulo:"90-90", cant:2},
+          {perfil:"8246", desc:"Umbral marco", formula:"A-50", angulo:"90-90", cant:1},
+          {perfil:"8215", desc:"Dintel marco", formula:"A-50", angulo:"90-90", cant:1},
+          {perfil:"8248", desc:"Parante lateral de hoja", formula:"H-102", angulo:"90-90", cant:2},
+          {perfil:"8249", desc:"Parante central de hoja", formula:"H-102", angulo:"90-90", cant:1},
+          {perfil:"8250", desc:"Parante central reforzado de hoja", formula:"H-102", angulo:"90-90", cant:1},
+          {perfil:"8253", desc:"Cabezal de hoja", formula:"(A/2)-25", angulo:"90-90", cant:2},
+          {perfil:"8254", desc:"Zócalo alto de hoja", formula:"(A/2)-25", angulo:"90-90", cant:2},
+        ]
+      },
+      corrediza_puerta_dvh: {
+        nombre: "Puerta corrediza — 2 hojas, DVH, corte 90° (reforzada)",
+        nota: "Mismos cortes que la versión de vidrio simple, solo cambian los perfiles de hoja a DVH (8221/8216/8243/8217/8218). La jamba de tapa premarco se ajusta según el nivel de piso terminado — medila en obra.",
+        piezas: [
+          {perfil:"8265", desc:"Jambas premarco", formula:"H+40", angulo:"45-45", cant:2},
+          {perfil:"8265", desc:"Umbral y dintel premarco", formula:"A+40", angulo:"45-45", cant:2},
+          {perfil:"8063", desc:"Dintel tapa premarco", formula:"A+58", angulo:"45-45", cant:1},
+          {perfil:"8220", desc:"Jamba de marco", formula:"H", angulo:"90-90", cant:2},
+          {perfil:"8246", desc:"Umbral marco", formula:"A-50", angulo:"90-90", cant:1},
+          {perfil:"8215", desc:"Dintel marco", formula:"A-50", angulo:"90-90", cant:1},
+          {perfil:"8221", desc:"Parante lateral de hoja DVH", formula:"H-102", angulo:"90-90", cant:2},
+          {perfil:"8216", desc:"Parante central de hoja DVH", formula:"H-102", angulo:"90-90", cant:1},
+          {perfil:"8243", desc:"Parante central reforzado de hoja DVH", formula:"H-102", angulo:"90-90", cant:1},
+          {perfil:"8217", desc:"Cabezal de hoja DVH", formula:"(A/2)-25", angulo:"90-90", cant:2},
+          {perfil:"8218", desc:"Zócalo alto de hoja DVH", formula:"(A/2)-25", angulo:"90-90", cant:2},
+        ]
+      },
+      paño_fijo: {
+        nombre: "Paño fijo",
+        nota: "Verificado en el catálogo Aluar A40 Batientes (pág. 21). Sin travesaño — no lo usás. La tabla también trae contravidrios, pero son todos \"medir en la abertura armada\" (sin fórmula fija), así que no están cargados.",
+        piezas: [
+          {perfil:"8064", desc:"Jambas premarco", formula:"H+40", angulo:"45-45", cant:2},
+          {perfil:"8064", desc:"Umbral y dintel premarco", formula:"A+40", angulo:"45-45", cant:2},
+          {perfil:"8063", desc:"Jambas tapa premarco", formula:"H+58", angulo:"45-45", cant:2},
+          {perfil:"8063", desc:"Umbral y dintel tapa premarco", formula:"A+58", angulo:"45-45", cant:2},
+          {perfil:"8342", desc:"Jambas marco", formula:"H", angulo:"45-45", cant:2},
+          {perfil:"8342", desc:"Umbral y dintel marco", formula:"A", angulo:"45-45", cant:2},
         ]
       },
     }
