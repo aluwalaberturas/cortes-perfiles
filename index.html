@@ -285,6 +285,8 @@
 
 </main>
 
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 <script>
 /* ==================== DATOS DE FÓRMULAS DE CORTE ==================== */
 // Fuente: manual "Sistema Módena" (Aluar) y "Sistema Actual" (Metales del Talar / MDT).
@@ -965,32 +967,52 @@ function cargarOrdenActual(){
   }catch(e){ orden = []; }
 }
 
-/* ==================== OBRAS GUARDADAS ==================== */
-// Snapshots con nombre de la lista de corte completa (+ dirección), para poder volver
-// a abrir un presupuesto de hace semanas sin tener que recalcular todo de nuevo.
-let obrasGuardadas = [];
-function loadObrasGuardadas(){
-  try{ obrasGuardadas = JSON.parse(localStorage.getItem('cortesPerfilesObrasGuardadas_v1')) || []; }
-  catch(e){ obrasGuardadas = []; }
-}
-function saveObrasGuardadas(){
-  localStorage.setItem('cortesPerfilesObrasGuardadas_v1', JSON.stringify(obrasGuardadas));
-}
+/* ==================== OBRAS GUARDADAS (compartidas via Firebase) ==================== */
+// Snapshots con nombre de la lista de corte completa (+ dirección) guardados en Firestore,
+// para que se vean iguales desde cualquier PC del taller — no en el navegador de cada uno.
+// obrasGuardadas se mantiene actualizado solo, en tiempo real, por el listener más abajo.
+const firebaseConfig = {
+  apiKey: "AIzaSyAY0Zo6uk7QaJSyjbg3CZm6_ejqtV7DrYQ",
+  authDomain: "guardado-corte-de-perfiles.firebaseapp.com",
+  projectId: "guardado-corte-de-perfiles",
+  storageBucket: "guardado-corte-de-perfiles.firebasestorage.app",
+  messagingSenderId: "109886508134",
+  appId: "1:109886508134:web:f99303f0c55b79100831a7"
+};
+firebase.initializeApp(firebaseConfig);
+const obrasCollection = firebase.firestore().collection('obras');
+
+let obrasGuardadas = []; // [{id, nombre, direccion, fecha, orden}], id = id de documento en Firestore
+let obrasConectado = false;
+
+obrasCollection.onSnapshot(
+  snapshot=>{
+    obrasConectado = true;
+    obrasGuardadas = snapshot.docs.map(doc=>({id:doc.id, ...doc.data()}));
+    renderObrasGuardadas();
+  },
+  err=>{
+    console.error('Error conectando con Firebase:', err);
+    obrasConectado = false;
+    renderObrasGuardadas();
+  }
+);
+
 function guardarObraActual(){
   const nombre = document.getElementById('obraNombre').value.trim();
   if(!nombre){ alert('Ponele un nombre en el campo "Obra" antes de guardar.'); return; }
   if(orden.length===0){ alert('No hay ninguna abertura cargada para guardar.'); return; }
   const direccion = document.getElementById('obraDireccion').value.trim();
-  const existente = obrasGuardadas.findIndex(o=>o.nombre===nombre);
-  if(existente>=0 && !confirm(`Ya existe una obra guardada como "${nombre}". ¿Sobrescribirla con la lista actual?`)) return;
+  const existente = obrasGuardadas.find(o=>o.nombre===nombre);
+  if(existente && !confirm(`Ya existe una obra guardada como "${nombre}". ¿Sobrescribirla con la lista actual?`)) return;
   const registro = {nombre, direccion, fecha:new Date().toISOString(), orden:JSON.parse(JSON.stringify(orden))};
-  if(existente>=0) obrasGuardadas[existente] = registro; else obrasGuardadas.push(registro);
-  saveObrasGuardadas();
-  renderObrasGuardadas();
-  alert(`Obra "${nombre}" guardada (${orden.length} abertura${orden.length>1?'s':''}).`);
+  const promesa = existente ? obrasCollection.doc(existente.id).set(registro) : obrasCollection.add(registro);
+  promesa
+    .then(()=> alert(`Obra "${nombre}" guardada (${orden.length} abertura${orden.length>1?'s':''}). Ya la ven todas las PC.`))
+    .catch(err=> alert('No se pudo guardar — revisá la conexión a internet. (' + err.message + ')'));
 }
-function cargarObraGuardada(idx){
-  const o = obrasGuardadas[idx];
+function cargarObraGuardada(id){
+  const o = obrasGuardadas.find(x=>x.id===id);
   if(!o) return;
   if(orden.length>0 && !confirm('Esto va a reemplazar la lista de corte actual (lo que no hayas guardado se pierde). ¿Seguir?')) return;
   orden = JSON.parse(JSON.stringify(o.orden));
@@ -1004,23 +1026,22 @@ function cargarObraGuardada(idx){
   renderLista();
   irATab('lista');
 }
-function eliminarObraGuardada(idx){
-  const o = obrasGuardadas[idx];
+function eliminarObraGuardada(id){
+  const o = obrasGuardadas.find(x=>x.id===id);
   if(!o) return;
-  if(!confirm(`¿Eliminar la obra guardada "${o.nombre}"? No se puede deshacer.`)) return;
-  obrasGuardadas.splice(idx,1);
-  saveObrasGuardadas();
-  renderObrasGuardadas();
+  if(!confirm(`¿Eliminar la obra guardada "${o.nombre}"? No se puede deshacer, y se borra para todos.`)) return;
+  obrasCollection.doc(id).delete().catch(err=> alert('No se pudo eliminar — revisá la conexión. (' + err.message + ')'));
 }
 function renderObrasGuardadas(){
   const box = document.getElementById('obrasGuardadasBox');
+  if(!obrasConectado){ box.innerHTML = '<span class="muted" style="font-size:12.5px;">Conectando con la base compartida...</span>'; return; }
   if(obrasGuardadas.length===0){ box.innerHTML = '<span class="muted" style="font-size:12.5px;">Todavía no guardaste ninguna obra.</span>'; return; }
-  const conIndice = obrasGuardadas.map((o,i)=>({...o, i})).sort((a,b)=>b.fecha.localeCompare(a.fecha));
-  box.innerHTML = conIndice.map(o=>{
+  const ordenadas = [...obrasGuardadas].sort((a,b)=>b.fecha.localeCompare(a.fecha));
+  box.innerHTML = ordenadas.map(o=>{
     const fecha = new Date(o.fecha).toLocaleDateString('es-AR');
     return `<span class="chip">📁 ${o.nombre} — ${fecha} (${o.orden.length})
-      <button onclick="cargarObraGuardada(${o.i})" title="Cargar esta obra" style="color:var(--accent);">↩</button>
-      <button onclick="eliminarObraGuardada(${o.i})" title="Eliminar">×</button>
+      <button onclick="cargarObraGuardada('${o.id}')" title="Cargar esta obra" style="color:var(--accent);">↩</button>
+      <button onclick="eliminarObraGuardada('${o.id}')" title="Eliminar">×</button>
     </span>`;
   }).join('');
 }
@@ -1413,12 +1434,11 @@ function actualizarObra(){
   actualizarObra();
 })();
 
-// Restaurar la lista de corte en curso (por si se cerró/refrescó sin guardar) y las obras
-// guardadas con nombre, para que estén disponibles apenas se abre la app.
+// Restaurar la lista de corte en curso (por si se cerró/refrescó sin guardar). Las obras
+// guardadas se cargan solas apenas conecta el listener de Firebase, más arriba.
 cargarOrdenActual();
 document.getElementById('listaCount').textContent = orden.length? '('+orden.length+')':'';
 renderResumenCalc();
-loadObrasGuardadas();
 renderObrasGuardadas();
 </script>
 </body>
