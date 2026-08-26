@@ -83,6 +83,10 @@
     .print-header .sub{color:#555;font-size:12.5px;}
     .card{box-shadow:none;}
     main{max-width:none;padding:0;}
+    .pagebreak{break-before:page;page-break-before:always;}
+    .barra-row{break-inside:avoid;page-break-inside:avoid;}
+    .grupo-card{break-inside:avoid;page-break-inside:avoid;}
+    .grupo-header{break-after:avoid;page-break-after:avoid;}
     body.modo-etiquetas main{display:none !important;}
     body.modo-etiquetas header{display:none !important;}
     body.modo-etiquetas .print-header{display:none !important;}
@@ -1232,15 +1236,15 @@ function optimizar(){
       const origenHtml = b.origen==='retazo' ? `<span class="badge stock-retazo">retazo stock ${b.capacidad}mm</span>`
         : b.origen==='stock_barra' ? `<span class="badge stock-barra">barra stock</span>`
         : `<span class="badge stock-nueva">barra nueva</span>`;
-      return `<div>
+      return `<div class="barra-row">
         <div class="muted" style="font-size:11px;margin-bottom:2px;">${origenHtml}</div>
         <div class="bar-diagram">${segs}<div class="bar-seg bar-waste" style="width:${wastePct}%">${b.capacidad-b.usado}mm</div></div>
       </div>`;
     }).join('');
     const origenResumen = usarStock ? ` (${nBarrasNuevas} nueva, ${nBarrasStock} stock, ${nRetazos} retazo)` : '';
     return `
-      <div class="card">
-        <div class="flex-between">
+      <div class="card grupo-card">
+        <div class="flex-between grupo-header">
           <div><strong>${g.perfil}</strong> — ${[...g.descs].join(' / ')} <span class="badge ${g.linea}">${DATA[g.linea].nombre}</span> ${colorLabel(g.color)} ${materialLabel(g.material)}</div>
           <div class="muted">${barras.length} barra(s)${origenResumen} · ${g.piezas.length} piezas · desperdicio ${desperdicio}mm</div>
         </div>
@@ -1253,7 +1257,9 @@ function optimizar(){
     ? `<div class="warn-box no-print">Filtro de perfiles activo (pestaña "Lista de corte"): hay ${filtroPerfilesOcultos.size} perfil(es) oculto(s) y no se están optimizando acá.</div>`
     : '';
 
-  document.getElementById('optimResults').innerHTML = filtroHtml + legendHtml + statsHtml + confirmarHtml + gruposHtml;
+  // "pagebreak" fuerza que los perfiles empiecen en una hoja nueva al imprimir, separados
+  // del resumen (leyenda de colores + estadísticas), que queda solo en la primera hoja.
+  document.getElementById('optimResults').innerHTML = filtroHtml + legendHtml + statsHtml + confirmarHtml + '<div class="pagebreak"></div>' + gruposHtml;
 }
 
 function confirmarCorte(){
