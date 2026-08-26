@@ -1052,8 +1052,10 @@ function renderObrasGuardadas(){
   if(!obrasConectado){ box.innerHTML = '<span class="muted" style="font-size:12.5px;">Conectando con la base compartida...</span>'; return; }
   if(obrasGuardadas.length===0){ box.innerHTML = '<span class="muted" style="font-size:12.5px;">Todavía no guardaste ninguna obra.</span>'; return; }
 
-  const busqueda = document.getElementById('obrasGuardadasBuscar').value.trim().toLowerCase();
-  let visibles = busqueda ? obrasGuardadas.filter(o=>o.nombre.toLowerCase().includes(busqueda)) : obrasGuardadas;
+  // Normaliza tildes para que buscar "perez" encuentre "Pérez" sin tener que escribir el acento.
+  const sinAcentos = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+  const busqueda = sinAcentos(document.getElementById('obrasGuardadasBuscar').value.trim());
+  let visibles = busqueda ? obrasGuardadas.filter(o=>sinAcentos(o.nombre).includes(busqueda)) : obrasGuardadas;
   if(visibles.length===0){ box.innerHTML = '<span class="muted" style="font-size:12.5px;">Ninguna obra coincide con la búsqueda.</span>'; return; }
 
   const ordenadas = [...visibles].sort((a,b)=>b.fecha.localeCompare(a.fecha));
