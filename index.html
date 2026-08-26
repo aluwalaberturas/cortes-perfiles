@@ -1085,17 +1085,21 @@ function optimizar(){
   // el plan, pero recién se persiste si tocás "Confirmar corte".
   const stockPool = usarStock ? JSON.parse(JSON.stringify(stock)) : {};
 
-  // Agrupar todas las piezas por (linea, perfil, desc, color, material). Cada pieza recuerda
-  // de qué abertura (índice en `orden`) viene, para poder pintarla con su color en el diagrama.
-  const grupos = {}; // key -> {linea, perfil, desc, color, material, piezas:[{medida, ordenIdx},...]}
+  // Agrupar todas las piezas por (linea, perfil, color, material) — SIN la descripción:
+  // dos piezas de un mismo perfil (ej. jambas y zócalo de mosquitero, las dos en 6255) salen
+  // del mismo palo de aluminio, así que tienen que poder mezclarse en la misma barra al
+  // optimizar, aunque tengan nombres distintos. Cada pieza recuerda su descripción (para el
+  // tooltip) y de qué abertura viene (para pintarla con su color en el diagrama).
+  const grupos = {}; // key -> {linea, perfil, descs:Set, color, material, piezas:[{medida, desc, ordenIdx},...]}
   orden.forEach((item, ordenIdx)=>{
     const color = item.color || 'blanco';
     const material = item.material || 'virgen';
     item.filas.forEach(f=>{
       if(filtroPerfilesOcultos.has(f.perfil)) return; // respeta el filtro de perfiles de la lista de corte
-      const key = item.linea+'|'+f.perfil+'|'+f.desc+'|'+color+'|'+material;
-      if(!grupos[key]) grupos[key] = {linea:item.linea, perfil:f.perfil, desc:f.desc, color, material, piezas:[]};
-      for(let i=0;i<f.cantTotal;i++) grupos[key].piezas.push({medida:f.medida, ordenIdx});
+      const key = item.linea+'|'+f.perfil+'|'+color+'|'+material;
+      if(!grupos[key]) grupos[key] = {linea:item.linea, perfil:f.perfil, descs:new Set(), color, material, piezas:[]};
+      grupos[key].descs.add(f.desc);
+      for(let i=0;i<f.cantTotal;i++) grupos[key].piezas.push({medida:f.medida, desc:f.desc, ordenIdx});
     });
   });
 
@@ -1155,7 +1159,7 @@ function optimizar(){
     barras.forEach(b=>{
       const sobra = b.capacidad - b.usado;
       if(usarStock && sobra>=umbralRetazo){
-        if(!stockPool[skey]) stockPool[skey] = {linea:g.linea, perfil:g.perfil, desc:g.desc, color:g.color, material:g.material, barras:0, retazos:[]};
+        if(!stockPool[skey]) stockPool[skey] = {linea:g.linea, perfil:g.perfil, desc:[...g.descs].join(' / '), color:g.color, material:g.material, barras:0, retazos:[]};
         addRetazoALista(stockPool[skey].retazos, sobra, 1);
       }
     });
@@ -1222,7 +1226,7 @@ function optimizar(){
       const segs = b.piezas.map(pz=>{
         const pct = (pz.medida/b.capacidad*100).toFixed(2);
         const etiq = etiquetaOrden(pz.ordenIdx);
-        return `<div class="bar-seg" style="width:${pct}%;background:${colorForOrden(pz.ordenIdx)};" title="${etiq} — ${pz.medida}mm">${etiq}·${pz.medida}</div>`;
+        return `<div class="bar-seg" style="width:${pct}%;background:${colorForOrden(pz.ordenIdx)};" title="${etiq} — ${pz.desc} — ${pz.medida}mm">${etiq}·${pz.medida}</div>`;
       }).join('');
       const wastePct = ((b.capacidad-b.usado)/b.capacidad*100).toFixed(2);
       const origenHtml = b.origen==='retazo' ? `<span class="badge stock-retazo">retazo stock ${b.capacidad}mm</span>`
@@ -1237,7 +1241,7 @@ function optimizar(){
     return `
       <div class="card">
         <div class="flex-between">
-          <div><strong>${g.perfil}</strong> — ${g.desc} <span class="badge ${g.linea}">${DATA[g.linea].nombre}</span> ${colorLabel(g.color)} ${materialLabel(g.material)}</div>
+          <div><strong>${g.perfil}</strong> — ${[...g.descs].join(' / ')} <span class="badge ${g.linea}">${DATA[g.linea].nombre}</span> ${colorLabel(g.color)} ${materialLabel(g.material)}</div>
           <div class="muted">${barras.length} barra(s)${origenResumen} · ${g.piezas.length} piezas · desperdicio ${desperdicio}mm</div>
         </div>
         ${barrasHtml}
