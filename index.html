@@ -1131,6 +1131,18 @@ firebase.firestore().collection('sis_ventas').onSnapshot(snap=>{
   if(typeof renderPres==='function') renderPres();
 });
 
+// También leer de la colección 'ventas' (app control de ventas)
+let ventasAppPorNum = {};
+firebase.firestore().collection('ventas').onSnapshot(snap=>{
+  ventasAppPorNum = {};
+  snap.forEach(d=>{
+    const v = d.data();
+    const num = v.numeroVenta || v.presupuesto;
+    if(num && /^B-/.test(String(num))) ventasAppPorNum[String(num)] = v;
+  });
+  if(typeof renderPres==='function') renderPres();
+});
+
 let obrasGuardadas = []; // [{id, nombre, direccion, fecha, orden}], id = id de documento en Firestore
 let obrasConectado = false;
 
@@ -1758,13 +1770,14 @@ async function cargarPres(){
   }catch(e){ box.innerHTML = '<div class="warn-box">No se pudo conectar con el Hub ('+esc(e.message)+')</div>'; }
 }
 function segVenta(num){
-  const v = ventasPorNum[num];
+  const v = ventasPorNum[num] || ventasAppPorNum[num];
   if(!v) return '<span class="muted">—</span>';
   const a = ['<span class="badge '+(v.estadoEntrega==='Entregado'?'stock-retazo':'stock-barra')+'">'+esc(v.estadoEntrega||'No entregado')+'</span>'];
   if(v.medidas && v.medidas!=='No hace falta') a.push('📏 '+esc(String(v.medidas).replace('Sí — ',''))+(v.medidasFecha?' '+esc(v.medidasFecha):''));
   if(v.produccion && v.produccion!=='No iniciada') a.push('🏭 '+esc(v.produccion));
   if(v.instalacion==='Con instalación') a.push('🔧 instalación');
   if(v.estadoPago) a.push('💰 '+esc(v.estadoPago));
+  if(v.producto) a.push('📦 '+esc(v.producto));
   return '<div style="font-size:12px;line-height:1.6">'+a.join('<br>')+'</div>';
 }
 function renderPres(){
@@ -1778,6 +1791,13 @@ function renderPres(){
   const enHub = new Set(l.map(p=>p.num));
   obrasGuardadas.filter(o=>o.tipo==='venta' && o.presupuesto && !enHub.has(o.presupuesto)).forEach(o=>{
     l.push({num:o.presupuesto, fecha:o.fecha, cliente:o.nombre, dir:o.direccion, localidad:'', items:[], estado:'vendido', soloGuardada:true});
+  });
+  // Ventas de la app de control de ventas (colección Firebase 'ventas') que no están en el Hub
+  const enLista = new Set(l.map(p=>p.num));
+  Object.entries(ventasAppPorNum).forEach(([num, v])=>{
+    if(!enLista.has(num)){
+      l.push({num, fecha:v.fechaCompra||v.fecha||'', cliente:v.cliente||'—', dir:v.direccion||'', localidad:v.localidad||'', items:[], estado:'vendido', vendedor:v.vendedor||'', soloGuardada:true});
+    }
   });
   if(q) l = l.filter(p => (String(p.num)+' '+String(p.cliente)).toLowerCase().includes(q));
   l = l.slice().sort((a,b)=>String(b.num).localeCompare(String(a.num)));
