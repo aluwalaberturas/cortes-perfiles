@@ -1796,7 +1796,7 @@ function renderPres(){
   const enLista = new Set(l.map(p=>p.num));
   Object.entries(ventasAppPorNum).forEach(([num, v])=>{
     if(!enLista.has(num)){
-      l.push({num, fecha:v.fechaCompra||v.fecha||'', cliente:v.cliente||'—', dir:v.direccion||'', localidad:v.localidad||'', items:[], estado:'vendido', vendedor:v.vendedor||'', soloGuardada:true});
+      l.push({num, fecha:v.fechaCompra||v.fecha||'', cliente:v.cliente||'—', dir:v.direccion||'', localidad:v.localidad||'', items:v.items||[], estado:'vendido', vendedor:v.vendedor||'', soloGuardada:true});
     }
   });
   if(q) l = l.filter(p => (String(p.num)+' '+String(p.cliente)).toLowerCase().includes(q));
@@ -1831,7 +1831,11 @@ function renderPres(){
       '<td class="acc" data-l="" style="text-align:right;white-space:nowrap;"><button class="primary" onclick="cargarObraGuardada(\''+esc(o.id)+'\')">Abrir</button> <button class="danger" title="Eliminar para todos" onclick="eliminarObraGuardada(\''+esc(o.id)+'\')">🗑</button></td></tr>').join('')+'</tbody></table>';
 }
 function cargarPresupuestoAObra(num){
-  const p = presLista.find(x=>x.num===num);
+  let p = presLista.find(x=>x.num===num);
+  if(!p && ventasAppPorNum[num]){
+    const v = ventasAppPorNum[num];
+    p = {num, cliente:v.cliente||'', dir:v.direccion||'', localidad:v.localidad||'', items:v.items||[], soloGuardada:true};
+  }
   if(!p) return;
   if(orden.length>0){
     const actual = document.getElementById('obraNombre').value.trim() || 'la obra actual';
