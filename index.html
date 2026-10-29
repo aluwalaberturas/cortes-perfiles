@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aluwal · Cortes de perfiles</title>
+<title>Aluwal · Obra: vidrios y cortes</title>
 <style>
   :root{
-    --bg:#0f1720; --panel:#171f2a; --panel2:#1e2836; --border:#2a3644;
-    --text:#e8edf2; --muted:#8b98a5; --accent:#3d9bff; --accent2:#2ecf7a;
+    --bg:#0d0d0d; --panel:#161616; --panel2:#1d1d1d; --border:#2a2a2a;
+    --text:#eee; --muted:#999; --accent:#c9a96e; --accent2:#2ecf7a;
     --warn:#e0a83b; --danger:#e05353;
   }
   *{box-sizing:border-box;}
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);}
-  header{padding:18px max(24px,calc((100% - 1200px)/2 + 24px));border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  header{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
   header h1{font-size:18px;margin:0;font-weight:600;}
   header .sub{color:var(--muted);font-size:12.5px;}
-  nav{display:flex;gap:8px;padding:14px max(24px,calc((100% - 1200px)/2 + 24px)) 0;flex-wrap:wrap;}
+  nav{display:flex;gap:8px;padding:14px 24px 0;flex-wrap:wrap;}
   nav button{background:var(--panel);border:1px solid var(--border);color:var(--muted);padding:9px 16px;border-radius:8px 8px 0 0;cursor:pointer;font-size:13.5px;font-weight:500;}
   nav button.active{background:var(--panel2);color:var(--text);border-color:var(--accent);}
   main{padding:20px 24px 60px;max-width:1200px;margin:0 auto;}
@@ -27,14 +27,14 @@
   .field label{font-size:12px;color:var(--muted);}
   select,input[type=number],input[type=text]{background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:9px 10px;border-radius:7px;font-size:14px;}
   input[type=number]{width:110px;}
-  button.primary{background:var(--accent);color:#fff;border:none;padding:10px 18px;border-radius:7px;cursor:pointer;font-size:14px;font-weight:600;}
+  button.primary{background:var(--accent);color:#0d0d0d;border:none;padding:10px 18px;border-radius:7px;cursor:pointer;font-size:14px;font-weight:600;}
   button.primary:hover{filter:brightness(1.1);}
   button.ghost{background:transparent;border:1px solid var(--border);color:var(--text);padding:9px 14px;border-radius:7px;cursor:pointer;font-size:13.5px;}
   button.danger{background:transparent;border:1px solid var(--danger);color:var(--danger);padding:6px 10px;border-radius:6px;cursor:pointer;font-size:12.5px;}
   table{width:100%;border-collapse:collapse;font-size:13px;}
   th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);}
   th{color:var(--muted);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;}
-  tr:hover td{background:#1a2330;}
+  tr:hover td{background:#1c1c1c;}
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;}
   .badge.modena{background:#2a3f5f;color:#8ec2ff;}
   .badge.actual{background:#3f2a5f;color:#c98eff;}
@@ -74,6 +74,18 @@
   .etiqueta-row{padding:14px 6px;border-bottom:1px dashed #999;font-size:17px;break-inside:avoid;}
   .etiqueta-row b{font-weight:700;}
   .etiqueta-dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:6px;vertical-align:middle;}
+  #vidriosPrint{display:none;color:#000;background:#fff;}
+  .vp-head{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #b8925a;padding-bottom:14px;margin-bottom:20px;}
+  .vp-brand{font-size:20px;font-weight:700;letter-spacing:3px;text-transform:uppercase;}
+  .vp-brand small{display:block;font-size:11px;font-weight:400;letter-spacing:2px;color:#666;margin-top:4px;}
+  .vp-meta{text-align:right;font-size:11px;color:#666;line-height:1.5;}
+  table.vp-grid{width:100%;border-collapse:collapse;font-size:11px;}
+  .vp-grid th,.vp-grid td{border:1px solid #999;padding:7px 8px;color:#000;text-align:left;}
+  .vp-grid thead th{background:#efe6d8;font-size:9px;letter-spacing:1.2px;text-transform:uppercase;}
+  .vp-grid tbody tr:nth-child(even) td{background:#f7f5f1;}
+  .vp-page2{break-before:page;page-break-before:always;}
+  .vp-page2 .vp-grid{font-size:14px;}
+  td.vidrio{color:var(--accent);font-weight:600;white-space:nowrap;}
   @media print{
     :root{ --bg:#fff; --panel:#fff; --panel2:#f4f4f4; --border:#ccc; --text:#000; --muted:#555; }
     *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important;}
@@ -92,32 +104,39 @@
     body.modo-etiquetas header{display:none !important;}
     body.modo-etiquetas .print-header{display:none !important;}
     body.modo-etiquetas #etiquetasPrint{display:grid !important;grid-template-columns:1fr 1fr;column-gap:18px;}
+    body.modo-vidrios main, body.modo-vidrios header, body.modo-vidrios .print-header{display:none !important;}
+    body.modo-vidrios #vidriosPrint{display:block !important;}
   }
 </style>
 </head>
 <body>
 
 <div class="print-header">
-  <h2>Aluwal Aberturas — Cortes de perfiles</h2>
+  <h2>Aluwal Aberturas — Obra</h2>
   <div class="sub" id="printDate"></div>
   <div class="sub" id="printObra" style="font-weight:600;margin-top:4px;"></div>
 </div>
 
 <div id="etiquetasPrint"></div>
+<div id="vidriosPrint"></div>
 
 <header>
   <div>
-    <h1>Cortes de perfiles — Aluwal</h1>
-    <div class="sub">Calculadora de medidas de corte + optimizador de barras (Modena / Actual / A30 New / Mass R60)</div>
+    <h1>Obra — vidrios y cortes · Aluwal</h1>
+    <div class="sub">Cargás cada abertura una sola vez: sale el vidrio, los cortes de perfiles y el optimizador de barras</div>
   </div>
-  <div style="display:flex;gap:10px;align-items:center;">
+  <div class="hdr-actions" style="display:flex;gap:10px;align-items:center;">
+    <div class="pill" id="mlPill">ML total obra: 0.00 mts</div>
+    <div class="pill" id="nubePill">☁ —</div>
     <div class="pill" id="stockPill">Barra estándar: 6000 mm</div>
+    <button class="print-btn no-print" onclick="abrirPres()">📥 Traer presupuesto</button>
     <button class="print-btn no-print" onclick="imprimirEtiquetas()">🏷️ Imprimir etiquetas</button>
+    <button class="print-btn no-print" onclick="imprimirVidrios()">🪟 Imprimir vidrios</button>
     <button class="print-btn no-print" onclick="window.print()">🖨️ Imprimir esta vista</button>
   </div>
 </header>
 
-<div class="no-print" style="padding:14px 24px 0;max-width:1200px;margin:0 auto;">
+<div class="no-print obra-top" style="padding:14px 24px 0;max-width:1200px;margin:0 auto;">
   <div class="card" style="margin-bottom:0;">
     <div class="row">
       <div class="field" style="min-width:220px;">
@@ -145,16 +164,56 @@
 </div>
 
 <nav class="no-print">
-  <button class="active" data-tab="calc">1 · Calcular medidas</button>
-  <button data-tab="lista">2 · Lista de corte <span id="listaCount" class="muted"></span></button>
-  <button data-tab="optim">3 · Optimizar barras</button>
+  <button class="active" data-tab="pres">1 · Presupuestos</button>
+  <button data-tab="vidrios">2 · Vidrios</button>
+  <button data-tab="lista">3 · Lista de corte <span id="listaCount" class="muted"></span></button>
+  <button data-tab="optim">4 · Optimizar barras</button>
+  <button data-tab="calc" title="Cargar una abertura suelta, sin presupuesto">＋ Abertura a mano</button>
 </nav>
 
 <main>
 
-  <!-- TAB 1: CALCULAR -->
-  <div class="tab active" id="tab-calc">
+  <!-- TAB 1: OBRAS (inicio) -->
+  <div class="tab active" id="tab-pres">
+    <div class="card">
+      <div class="flex-between" style="margin-bottom:4px;">
+        <h3 style="margin:0;">Obras</h3>
+        <div class="muted" style="font-size:13px;" id="presActual"></div>
+      </div>
+      <div class="note" style="margin:0 0 14px;">Todo lo que cargues se guarda solo y lo ve cualquiera que abra la app.</div>
+      <div class="flex-between" style="margin-bottom:8px;">
+        <h4 style="margin:0;">🏷️ Ventas <span class="muted" style="font-weight:400;font-size:12.5px;">(presupuestos vendidos)</span></h4>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <label class="check-label"><input type="checkbox" id="presTodos" onchange="renderPres()"> mostrar también no vendidos</label>
+          <div class="field" style="min-width:0;"><select id="presMaterial" title="Material de los perfiles"><option value="virgen">Material: Virgen</option><option value="reciclado">Material: Reciclado</option><option value="tocho">Material: Tocho</option></select></div>
+          <button class="ghost" onclick="cargarPres()">↻ Actualizar</button>
+        </div>
+      </div>
+      <input type="text" id="presBuscar" placeholder="Buscar por número o cliente…" oninput="renderPres()" style="width:100%;max-width:340px;margin-bottom:10px;">
+      <div id="presTabla"></div>
+      <div class="note">"Cargar a la obra" trae las aberturas del presupuesto (línea, tipo, medidas, color y opcionales) y calcula vidrios y cortes. Después queda guardada: la próxima vez la abrís con "Abrir".</div>
+    </div>
+    <div class="card">
+      <div class="flex-between" style="margin-bottom:8px;">
+        <h4 style="margin:0;">✏️ Obras a mano <span class="muted" style="font-weight:400;font-size:12.5px;">(sin presupuesto)</span></h4>
+        <button class="primary" onclick="nuevaObraAMano()">＋ Nueva obra a mano</button>
+      </div>
+      <div id="manoTabla"></div>
+    </div>
+  </div>
+
+  <!-- TAB: ABERTURA A MANO -->
+  <div class="tab" id="tab-calc">
     <div class="card no-print">
+      <div class="row" style="margin-bottom:12px;">
+        <div class="field"><label>ID (V1, V2, cocina…)</label><input type="text" id="idVentana" placeholder="V1" style="width:150px;"></div>
+        <div class="field"><label>Piso</label><input type="text" id="piso" placeholder="PB, 1, 2…" style="width:110px;"></div>
+        <div class="field"><label>Lado</label><select id="lado"><option value="Frente">Frente</option><option value="Contrafrente">Contrafrente</option></select></div>
+        <div class="field"><label>Composición de vidrio</label>
+          <select id="composicion"><option value="4/9/4">4/9/4</option><option value="4/12/4">4/12/4</option><option value="4/6/3+3">4/6/3+3</option></select>
+        </div>
+        <div class="field" style="flex:1;min-width:220px;"><label>Observación</label><input type="text" id="observacion" placeholder="Notas adicionales…" style="width:100%;"></div>
+      </div>
       <div class="row">
         <div class="field">
           <label>Línea</label>
@@ -218,11 +277,11 @@
       <div class="flex-between">
         <h3 style="margin:0;" id="resultTitle"></h3>
         <div class="no-print" style="display:flex;gap:8px;align-items:center;">
-          <input type="text" id="etiquetaVentana" placeholder="Etiqueta (opcional, ej: V3)" style="width:190px;">
-          <button class="ghost" onclick="agregarAOrden()">+ Agregar a lista de corte</button>
+          <button class="primary" onclick="agregarAOrden()">+ Agregar a la obra</button>
         </div>
       </div>
-      <div class="note" style="margin-top:-4px;">Si dejás la etiqueta vacía, se numera automático (V1, V2...). Si ponés una, se usa esa en vez del número.</div>
+      <div class="note" style="margin-top:-4px;">Si dejás el ID vacío, se numera automático (V1, V2...).</div>
+      <div id="vidrioPreview" style="margin:10px 0 4px;font-size:14px;"></div>
       <table>
         <thead><tr><th>Perfil</th><th>Descripción</th><th>Fórmula</th><th>Medida corte</th><th>Ángulo</th><th>Cant. x abertura</th><th>Cant. total</th></tr></thead>
         <tbody id="resultBody"></tbody>
@@ -233,6 +292,7 @@
       <div class="flex-between">
         <h3 style="margin:0;">Aberturas agregadas <span id="resumenCount" class="muted"></span></h3>
         <div class="no-print" style="display:flex;gap:8px;">
+          <button class="ghost" onclick="irATab('vidrios')">Ver vidrios</button>
           <button class="ghost" onclick="irATab('lista')">Ver lista de corte</button>
           <button class="primary" onclick="irATab('optim')">Ver optimizador de barras</button>
         </div>
@@ -244,7 +304,30 @@
     </div>
   </div>
 
-  <!-- TAB 2: LISTA DE CORTE -->
+  <!-- TAB 2: VIDRIOS -->
+  <div class="tab" id="tab-vidrios">
+    <div class="card">
+      <div class="flex-between">
+        <div>
+          <h3 style="margin:0;">Planilla de vidrios</h3>
+          <div class="muted" style="font-size:12.5px;margin-top:4px;" id="vidriosML"></div>
+        </div>
+        <div class="no-print" style="display:flex;gap:8px;">
+          <button class="print-btn" onclick="imprimirVidrios()">🪟 Imprimir planilla (2 hojas)</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto;margin-top:10px;">
+        <table>
+          <thead><tr><th>ID</th><th>Piso</th><th>Lado</th><th>Composición</th><th>Línea</th><th>Tipo</th><th>Ventana</th><th>Vidrio</th><th>Cant.</th><th>Obs.</th></tr></thead>
+          <tbody id="vidriosBody"></tbody>
+        </table>
+      </div>
+      <div class="note" id="vidriosEmpty">Todavía no cargaste ninguna abertura.</div>
+      <div class="warn-box" id="vidriosSinFormula" style="display:none;margin-top:12px;"></div>
+    </div>
+  </div>
+
+  <!-- TAB 3: LISTA DE CORTE -->
   <div class="tab" id="tab-lista">
     <div class="card">
       <div class="flex-between">
@@ -260,7 +343,7 @@
     </div>
   </div>
 
-  <!-- TAB 3: OPTIMIZADOR -->
+  <!-- TAB 4: OPTIMIZADOR -->
   <div class="tab" id="tab-optim">
     <div class="card no-print">
       <div class="row">
@@ -288,6 +371,45 @@
 
 </main>
 
+<style>#presTabla td,#presTabla th{padding:8px 10px;}</style>
+<style>
+  /* ---- Celular / tablet ---- */
+  .hdr-actions{flex-wrap:wrap;}
+  #tab-lista .card, #tab-pres .card, #tab-calc .card{overflow-x:auto;}
+  @media (max-width: 760px){
+    header{padding:12px 14px;}
+    header h1{font-size:16px;}
+    header .sub{font-size:11.5px;}
+    .hdr-actions{gap:6px !important;width:100%;}
+    .pill{font-size:11px;padding:3px 9px;white-space:nowrap;}
+    .print-btn{padding:7px 10px;font-size:12px;}
+    .obra-top{padding:10px 12px 0 !important;}
+    nav{padding:10px 12px 0;}
+    nav button{padding:8px 12px;font-size:12.5px;border-radius:8px;}
+    main{padding:12px 12px 50px;}
+    .card{padding:14px;}
+    .field{min-width:0 !important;flex:1 1 140px;}
+    .field input[type=number], .field input[type=text], .field select{width:100%;max-width:100%;}
+    .row{gap:10px;}
+    table{font-size:12px;}
+    th,td{padding:7px 6px;}
+    button.primary, button.ghost{padding:9px 12px;}
+    .flex-between{align-items:flex-start;}
+    .stat-grid{grid-template-columns:repeat(2,1fr);}
+    .obra-top .row{flex-direction:column;align-items:stretch;}
+    .obra-top .field{flex:none !important;width:100%;}
+    .obra-top button{width:100%;}
+    #presTabla table, #manoTabla table{display:block;}
+    #presTabla thead, #manoTabla thead{display:none;}
+    #presTabla tbody, #manoTabla tbody{display:block;}
+    #presTabla tr, #manoTabla tr{display:block;border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:10px;background:var(--panel2);}
+    #presTabla td, #manoTabla td{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;border:none;padding:4px 0;text-align:right;}
+    #presTabla td::before, #manoTabla td::before{content:attr(data-l);color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em;text-align:left;flex:0 0 36%;}
+    #presTabla td.acc, #manoTabla td.acc{justify-content:flex-end;padding-top:8px;white-space:normal;}
+    #presTabla td.acc::before, #manoTabla td.acc::before{display:none;}
+    #presTabla .card, #presTabla{overflow-x:visible;}
+  }
+</style>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 <script>
@@ -509,6 +631,11 @@ const DATA = {
   a30: {
     nombre: "A30 New (Aluar)",
     tipos: {
+      corrediza_3h: {
+        nombre: "Ventana/Puerta corrediza — 3 hojas (por ahora solo vidrio)",
+        nota: "Todavía no están cargados los cortes de perfiles de A30 3 hojas — por ahora esta abertura solo calcula el vidrio.",
+        piezas: []
+      },
       corrediza: {
         nombre: "Ventana/Puerta corrediza — 2 hojas",
         nota: "Línea A30 New (catálogo Aluar 2008). Incluye mosquitero.",
@@ -709,6 +836,8 @@ function irATab(tabName){
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active', b.dataset.tab===tabName));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+tabName).classList.add('active');
+  if(tabName==='pres') cargarPres();
+  if(tabName==='vidrios') renderVidrios();
   if(tabName==='lista') renderLista();
   if(tabName==='optim') optimizar();
   if(tabName==='stock') renderStockTab();
@@ -776,7 +905,7 @@ function calcular(){
     if(g==='mosquitero' && !incluirMosquitero) return false;
     return true;
   });
-  if(piezasFiltradas.length===0){ alert('Desmarcaste todo — no queda ninguna pieza para calcular.'); return; }
+  if(piezasFiltradas.length===0 && tipo.piezas.length>0){ alert('Desmarcaste todo — no queda ninguna pieza para calcular.'); return; }
   const filas = piezasFiltradas.map(p=>{
     const medida = evalFormula(p.formula, A, H);
     return {...p, medida, cantTotal: p.cant*cantAb};
@@ -798,14 +927,24 @@ function calcular(){
       <td>${f.cantTotal}</td>
     </tr>
   `).join('');
+  const v = vidrioDe(ultimoCalculo);
+  const pv = document.getElementById('vidrioPreview');
+  if(v && !v.invalido) pv.innerHTML = `🪟 Vidrio: <b style="color:var(--accent)">${v.ancho} x ${v.alto} mm</b> × ${v.porAbertura} por abertura (${v.cant} en total) — ${esc(document.getElementById('composicion').value)}`;
+  else if(v) pv.textContent = 'Vidrio: las medidas dan negativo o muy chico — revisá ancho y alto.';
+  else pv.textContent = 'Vidrio: todavía no hay fórmula calibrada para esta línea / tipo.';
 }
 
 function agregarAOrden(){
   if(!ultimoCalculo){ alert('Primero calculá una medida.'); return; }
-  const etiquetaEl = document.getElementById('etiquetaVentana');
-  ultimoCalculo.etiqueta = etiquetaEl.value.trim() || null;
-  orden.push(ultimoCalculo);
-  etiquetaEl.value = '';
+  const val = id => document.getElementById(id).value;
+  const item = JSON.parse(JSON.stringify(ultimoCalculo));
+  item.etiqueta = val('idVentana').trim() || null;
+  item.piso = val('piso').trim();
+  item.lado = val('lado');
+  item.composicion = val('composicion');
+  item.observacion = val('observacion').trim();
+  orden.push(item);
+  ['idVentana','piso','observacion'].forEach(id=>{ document.getElementById(id).value = ''; });
   document.getElementById('listaCount').textContent = '('+orden.length+')';
   guardarOrdenActual();
   renderResumenCalc();
@@ -948,6 +1087,7 @@ function quitarItem(idx){
 function vaciarLista(){
   if(confirm('¿Vaciar toda la lista de corte acumulada?')){
     orden = [];
+    setObraActualId(null);
     filtroPerfilesOcultos.clear();
     document.getElementById('listaCount').textContent='';
     guardarOrdenActual();
@@ -961,11 +1101,13 @@ function vaciarLista(){
 // de la pestaña no la borre. Es distinto de "Obras guardadas" (abajo), que son
 // snapshots con nombre que elegís guardar vos a propósito para consultar después.
 function guardarOrdenActual(){
-  localStorage.setItem('cortesPerfilesOrdenActual_v1', JSON.stringify(orden));
+  localStorage.setItem('sisObraOrden_v1', JSON.stringify(orden));
+  refrescarVidrios();
+  autoGuardarObra();
 }
 function cargarOrdenActual(){
   try{
-    const raw = localStorage.getItem('cortesPerfilesOrdenActual_v1');
+    const raw = localStorage.getItem('sisObraOrden_v1');
     orden = raw ? (JSON.parse(raw) || []) : [];
   }catch(e){ orden = []; }
 }
@@ -974,16 +1116,20 @@ function cargarOrdenActual(){
 // Snapshots con nombre de la lista de corte completa (+ dirección) guardados en Firestore,
 // para que se vean iguales desde cualquier PC del taller — no en el navegador de cada uno.
 // obrasGuardadas se mantiene actualizado solo, en tiempo real, por el listener más abajo.
-const firebaseConfig = {
-  apiKey: "AIzaSyAY0Zo6uk7QaJSyjbg3CZm6_ejqtV7DrYQ",
-  authDomain: "guardado-corte-de-perfiles.firebaseapp.com",
-  projectId: "guardado-corte-de-perfiles",
-  storageBucket: "guardado-corte-de-perfiles.firebasestorage.app",
-  messagingSenderId: "109886508134",
-  appId: "1:109886508134:web:f99303f0c55b79100831a7"
-};
+// Sistema nuevo: misma base compartida que Control de ventas (proyecto aluwal-ventas), colecciones sis_*
+const firebaseConfig = {apiKey:"AIzaSyCshw1t7OXjTbg8ebvQzLn3VKxbY94cuRI",authDomain:"aluwal-ventas.firebaseapp.com",projectId:"aluwal-ventas",storageBucket:"aluwal-ventas.firebasestorage.app",messagingSenderId:"1016364782945",appId:"1:1016364782945:web:0eabc4b024666d6e5d2120"};
 firebase.initializeApp(firebaseConfig);
-const obrasCollection = firebase.firestore().collection('obras');
+// Colección compartida de obras del sistema.
+const OBRAS_COLECCION = 'sis_obras';
+const obrasCollection = firebase.firestore().collection(OBRAS_COLECCION);
+
+// Ventas (las carga y actualiza Control de ventas): acá solo se leen para mostrar el seguimiento
+let ventasPorNum = {};
+firebase.firestore().collection('sis_ventas').onSnapshot(snap=>{
+  ventasPorNum = {};
+  snap.forEach(d=>{ const v = d.data(); if(v.presupuesto) ventasPorNum[v.presupuesto] = v; });
+  if(typeof renderPres==='function') renderPres();
+});
 
 let obrasGuardadas = []; // [{id, nombre, direccion, fecha, orden}], id = id de documento en Firestore
 let obrasConectado = false;
@@ -1001,24 +1147,62 @@ obrasCollection.onSnapshot(
   }
 );
 
-function guardarObraActual(){
+// Obra actual compartida: se guarda sola en la base común (la ve cualquiera que abra la app).
+// Si todas las aberturas vienen de UN presupuesto, la obra es una "venta" con id = ese número (B-XXXX);
+// si no, es una obra "a mano" con id propio.
+let obraActualId = null;
+try{ obraActualId = localStorage.getItem('aluwalObraActualId') || null; }catch(e){}
+let _autoGuardarTimer = null;
+function setObraActualId(id){
+  obraActualId = id;
+  try{ id ? localStorage.setItem('aluwalObraActualId', id) : localStorage.removeItem('aluwalObraActualId'); }catch(e){}
+}
+function datosObraActual(){
   const nombre = document.getElementById('obraNombre').value.trim();
-  if(!nombre){ alert('Ponele un nombre en el campo "Obra" antes de guardar.'); return; }
-  if(orden.length===0){ alert('No hay ninguna abertura cargada para guardar.'); return; }
   const direccion = document.getElementById('obraDireccion').value.trim();
-  const existente = obrasGuardadas.find(o=>o.nombre===nombre);
-  if(existente && !confirm(`Ya existe una obra guardada como "${nombre}". ¿Sobrescribirla con la lista actual?`)) return;
-  const registro = {nombre, direccion, fecha:new Date().toISOString(), orden:JSON.parse(JSON.stringify(orden))};
-  const promesa = existente ? obrasCollection.doc(existente.id).set(registro) : obrasCollection.add(registro);
-  promesa
-    .then(()=> alert(`Obra "${nombre}" guardada (${orden.length} abertura${orden.length>1?'s':''}). Ya la ven todas las PC.`))
-    .catch(err=> alert('No se pudo guardar — revisá la conexión a internet. (' + err.message + ')'));
+  const nums = [...new Set(orden.map(o=>o.presupuesto).filter(Boolean))];
+  let tipo = 'mano', presupuesto = null, id = obraActualId;
+  if(nums.length===1){ tipo = 'venta'; presupuesto = nums[0]; id = nums[0]; }
+  else if(!id || /^B-/.test(id)) id = 'm' + Date.now().toString(36);
+  return {id, nombre, direccion, tipo, presupuesto};
+}
+async function guardarObraCompartida(manual){
+  const d = datosObraActual();
+  const pill = document.getElementById('nubePill');
+  if(!orden.length){ if(manual) alert('No hay ninguna abertura cargada para guardar.'); return false; }
+  if(!d.nombre){ if(manual) alert('Ponele un nombre en el campo "Obra" para que se guarde.'); else if(pill) pill.textContent = '☁ Poné nombre a la obra'; return false; }
+  setObraActualId(d.id);
+  const previa = obrasGuardadas.find(o=>o.id===d.id);
+  if(!manual && previa && previa.nombre===d.nombre && (previa.direccion||'')===d.direccion && JSON.stringify(previa.orden)===JSON.stringify(orden)){
+    if(pill) pill.textContent = '☁ Guardado para todos'; return true; // sin cambios
+  }
+  try{
+    await obrasCollection.doc(d.id).set({nombre:d.nombre, direccion:d.direccion, fecha:new Date().toISOString(), tipo:d.tipo, presupuesto:d.presupuesto, orden:JSON.parse(JSON.stringify(orden))});
+    if(pill) pill.textContent = '☁ Guardado para todos';
+    if(manual) alert('Obra "'+d.nombre+'" guardada ('+orden.length+' abertura'+(orden.length>1?'s':'')+'). La ven todas las PC.');
+    return true;
+  }catch(err){
+    if(pill) pill.textContent = '☁ Sin conexión';
+    if(manual) alert('No se pudo guardar — revisá la conexión a internet. ('+err.message+')');
+    return false;
+  }
+}
+function autoGuardarObra(){ clearTimeout(_autoGuardarTimer); _autoGuardarTimer = setTimeout(()=>guardarObraCompartida(false), 1200); }
+function guardarObraActual(){ guardarObraCompartida(true); }
+function nuevaObraAMano(){
+  if(orden.length>0 && !confirm('Se va a vaciar la pantalla para empezar una obra nueva (la actual queda guardada). ¿Seguir?')) return;
+  orden = []; filtroPerfilesOcultos.clear();
+  document.getElementById('obraNombre').value = ''; document.getElementById('obraDireccion').value = '';
+  actualizarObra(); setObraActualId(null); guardarOrdenActual();
+  document.getElementById('listaCount').textContent = '';
+  renderResumenCalc(); irATab('calc'); document.getElementById('obraNombre').focus();
 }
 function cargarObraGuardada(id){
   const o = obrasGuardadas.find(x=>x.id===id);
   if(!o) return;
   if(orden.length>0 && !confirm('Esto va a reemplazar la lista de corte actual (lo que no hayas guardado se pierde). ¿Seguir?')) return;
   orden = JSON.parse(JSON.stringify(o.orden));
+  setObraActualId(o.id);
   filtroPerfilesOcultos.clear();
   document.getElementById('obraNombre').value = o.nombre;
   document.getElementById('obraDireccion').value = o.direccion || '';
@@ -1027,7 +1211,7 @@ function cargarObraGuardada(id){
   document.getElementById('listaCount').textContent = orden.length? '('+orden.length+')':'';
   renderResumenCalc();
   renderLista();
-  irATab('lista');
+  irATab('vidrios');
 }
 function eliminarObraGuardada(id){
   const o = obrasGuardadas.find(x=>x.id===id);
@@ -1044,6 +1228,7 @@ function toggleObrasGuardadas(){
   renderObrasGuardadas();
 }
 function renderObrasGuardadas(){
+  if(typeof renderPres==='function') renderPres();
   const label = document.getElementById('obrasGuardadasToggleLabel');
   const cuenta = obrasGuardadas.length ? ` (${obrasGuardadas.length})` : '';
   label.textContent = (obrasGuardadasAbierto ? '▾' : '▸') + ' Obras guardadas' + cuenta;
@@ -1061,7 +1246,7 @@ function renderObrasGuardadas(){
   const ordenadas = [...visibles].sort((a,b)=>b.fecha.localeCompare(a.fecha));
   box.innerHTML = ordenadas.map(o=>{
     const fecha = new Date(o.fecha).toLocaleDateString('es-AR');
-    return `<span class="chip">📁 ${o.nombre} — ${fecha} (${o.orden.length})
+    return `<span class="chip">📁 ${o.nombre} — ${fecha} (${(o.orden||[]).length})
       <button onclick="cargarObraGuardada('${o.id}')" title="Cargar esta obra" style="color:var(--accent);">↩</button>
       <button onclick="eliminarObraGuardada('${o.id}')" title="Eliminar">×</button>
     </span>`;
@@ -1074,12 +1259,12 @@ function renderObrasGuardadas(){
 let stock = {};
 function loadStock(){
   try{
-    const raw = localStorage.getItem('cortesPerfilesStock_v1');
+    const raw = localStorage.getItem('sisObraStock_v1');
     stock = raw ? JSON.parse(raw) : {};
   }catch(e){ stock = {}; }
 }
 function saveStock(){
-  localStorage.setItem('cortesPerfilesStock_v1', JSON.stringify(stock));
+  localStorage.setItem('sisObraStock_v1', JSON.stringify(stock));
 }
 function stockKey(linea, perfil, color, material){ return linea+'|'+perfil+'|'+color+'|'+material; }
 
@@ -1433,20 +1618,21 @@ function imprimirEtiquetas(){
   document.body.classList.add('modo-etiquetas');
   window.print();
 }
-window.addEventListener('afterprint', ()=>{ document.body.classList.remove('modo-etiquetas'); });
+window.addEventListener('afterprint', ()=>{ document.body.classList.remove('modo-etiquetas'); document.body.classList.remove('modo-vidrios'); });
 
 // Datos de la obra (nombre + dirección) — quedan guardados en el navegador para no tener
 // que reescribirlos cada vez que abrís la app, y se muestran en el encabezado al imprimir.
 function actualizarObra(){
+  if(orden.length) autoGuardarObra();
   const nombre = document.getElementById('obraNombre').value.trim();
   const direccion = document.getElementById('obraDireccion').value.trim();
-  localStorage.setItem('cortesPerfilesObra_v1', JSON.stringify({nombre, direccion}));
+  localStorage.setItem('sisObraNombre_v1', JSON.stringify({nombre, direccion}));
   const partes = [nombre, direccion].filter(Boolean);
   document.getElementById('printObra').textContent = partes.length ? 'Obra: ' + partes.join(' — ') : '';
 }
 (function cargarObra(){
   try{
-    const raw = localStorage.getItem('cortesPerfilesObra_v1');
+    const raw = localStorage.getItem('sisObraNombre_v1');
     if(raw){
       const {nombre, direccion} = JSON.parse(raw);
       document.getElementById('obraNombre').value = nombre || '';
@@ -1456,12 +1642,253 @@ function actualizarObra(){
   actualizarObra();
 })();
 
+/* ==================== VIDRIOS (calculador de vidrios DVH) ==================== */
+// Fórmulas por "línea|tipo" (mm). ancho/alto = medida de cada vidrio; cant = vidrios por abertura.
+// Solo están las combinaciones calibradas con medidas reales; el resto muestra "sin fórmula".
+const VIDRIO_FORMULAS = {
+  'modena|corrediza_dvh': (a,h)=>({ancho:a/2-73,  alto:h-165, cant:2}),   // Modena DVH 2 hojas
+  'modena|paño_fijo':     (a,h)=>({ancho:a-57,    alto:h-57,  cant:1}),   // Modena DVH paño fijo
+  'a30|corrediza':        (a,h)=>({ancho:a/2-100, alto:h-185, cant:2}),   // A30 DVH 2 hojas
+  'a30|corrediza_3h':     (a,h)=>({ancho:a/3-82,  alto:h-238, cant:3}),   // A30 DVH 3 hojas
+};
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+// null = sin fórmula · {invalido:true} = medidas absurdas · si no, {ancho, alto, cant (total), porAbertura}
+function vidrioDe(item){
+  const f = VIDRIO_FORMULAS[item.linea+'|'+item.tipoKey];
+  if(!f) return null;
+  if(item.vidrioTipo && item.vidrioTipo!=='dvh') return null; // las fórmulas son solo para DVH
+  const v = f(item.A, item.H);
+  const ancho = Math.round(v.ancho), alto = Math.round(v.alto);
+  if(ancho<100 || alto<100) return {invalido:true};
+  return {ancho, alto, porAbertura:v.cant, cant:v.cant*(item.cantAb||1)};
+}
+// Metros lineales = perímetro de cada abertura x cantidad.
+function mlTotal(){
+  return orden.reduce((sum,it)=> sum + 2*(it.A+it.H)*(it.cantAb||1), 0) / 1000;
+}
+function refrescarVidrios(){
+  actualizarPresActual();
+  document.getElementById('mlPill').textContent = 'ML total obra: ' + mlTotal().toFixed(2) + ' mts';
+  renderVidrios();
+}
+function renderVidrios(){
+  const body = document.getElementById('vidriosBody');
+  document.getElementById('vidriosML').textContent = 'ML total obra: ' + mlTotal().toFixed(2) + ' mts';
+  document.getElementById('vidriosEmpty').style.display = orden.length ? 'none' : 'block';
+  const sin = [];
+  body.innerHTML = orden.map((it,idx)=>{
+    const v = vidrioDe(it);
+    let celda, cant = '—';
+    if(v && !v.invalido){ celda = `<td class="vidrio">${v.ancho} x ${v.alto} mm</td>`; cant = v.cant; }
+    else { celda = `<td class="muted">${v ? 'medidas inválidas' : 'sin fórmula'}</td>`; sin.push(etiquetaOrden(idx)); }
+    return `<tr>
+      <td>${ventanaBadge(idx)}</td>
+      <td>${esc(it.piso||'—')}</td>
+      <td>${esc(it.lado||'—')}</td>
+      <td>${esc(it.composicion||'—')}</td>
+      <td><span class="badge ${it.linea}">${DATA[it.linea].nombre}</span></td>
+      <td>${esc(it.tipoNombre)}</td>
+      <td>${it.A} x ${it.H}${it.cantAb>1?' ×'+it.cantAb:''}</td>
+      ${celda}
+      <td>${cant}</td>
+      <td style="max-width:220px;white-space:normal;overflow-wrap:break-word;">${esc(it.observacion||'')}</td>
+    </tr>`;
+  }).join('');
+  const box = document.getElementById('vidriosSinFormula');
+  if(sin.length){ box.style.display='block'; box.textContent = 'Sin fórmula de vidrio todavía (no salen en la planilla impresa): ' + sin.join(', '); }
+  else box.style.display='none';
+}
+// Imprime 2 hojas: 1) planilla completa, 2) medidas para el proveedor (ID, ancho, alto, composición, cant.)
+function imprimirVidrios(){
+  const filas = orden.map((it,idx)=>({it, idx, v:vidrioDe(it)})).filter(x=>x.v && !x.v.invalido);
+  if(filas.length===0){ alert('No hay ninguna abertura con fórmula de vidrio en la obra.'); return; }
+  const fecha = new Date().toLocaleDateString('es-AR');
+  const nombre = document.getElementById('obraNombre').value.trim();
+  const dir = document.getElementById('obraDireccion').value.trim();
+  const meta = (t)=>`<div class="vp-head"><div class="vp-brand">Aluwal Aberturas<small>${t}</small></div>
+    <div class="vp-meta">${nombre?'Obra: <b>'+esc(nombre)+'</b><br>':''}${dir?esc(dir)+'<br>':''}Fecha: ${fecha}</div></div>`;
+  const p1 = filas.map(({it,idx,v})=>`<tr><td>${esc(etiquetaOrden(idx))}</td><td>${esc(it.piso||'—')}</td><td>${esc(it.lado||'—')}</td>
+    <td>${esc(it.composicion||'—')}</td><td>${DATA[it.linea].nombre.replace(' (Aluar)','')}</td><td>${esc(it.tipoNombre)}</td>
+    <td>${it.A} x ${it.H}</td><td><b>${v.ancho} x ${v.alto}</b></td><td>${v.cant}</td><td>${esc(it.observacion||'')}</td></tr>`).join('');
+  const p2 = filas.map(({it,idx,v})=>`<tr><td>${esc(etiquetaOrden(idx))}</td><td>${v.ancho}</td><td>${v.alto}</td>
+    <td>${esc(it.composicion||'—')}</td><td>${v.cant}</td></tr>`).join('');
+  document.getElementById('vidriosPrint').innerHTML = `
+    <div>${meta('Planilla de vidrios — ML total obra: '+mlTotal().toFixed(2)+' mts')}
+      <table class="vp-grid"><thead><tr><th>ID</th><th>Piso</th><th>Lado</th><th>Composición</th><th>Línea</th><th>Tipo</th><th>Ventana (mm)</th><th>Vidrio (mm)</th><th>Cant.</th><th>Obs.</th></tr></thead><tbody>${p1}</tbody></table></div>
+    <div class="vp-page2">${meta('Medidas de vidrio — para proveedor')}
+      <table class="vp-grid"><thead><tr><th>ID</th><th>Ancho (mm)</th><th>Alto (mm)</th><th>Composición</th><th>Cant.</th></tr></thead><tbody>${p2}</tbody></table></div>`;
+  document.body.classList.add('modo-vidrios');
+  window.print();
+}
+
+/* ==================== TRAER PRESUPUESTO DEL HUB ==================== */
+// Lee los presupuestos guardados en el Hub (el mismo número B-XXXX que usan los presupuestadores)
+// y los convierte en aberturas de la obra: vidrios + cortes + optimizador.
+const HUB_URL = 'https://script.google.com/macros/s/AKfycby4xXecpdlxPP90XeMtweIc2yOF3RHxceSAnjmApcxj4PiAYQB_MKFBbnPJsOgo7rJP/exec';
+let presLista = [];
+
+// tipo del calculador a medida -> tipo de la tabla de cortes (según línea y vidrio). null = sin cortes cargados.
+const MAPA_TIPOS = {
+  pano:           ()=>'paño_fijo',
+  corrediza:      (l,v)=> l==='modena' ? (v==='dvh' ? 'corrediza_dvh' : 'corrediza') : 'corrediza',
+  corrediza3:     (l,v)=> l==='modena' ? (v==='dvh' ? 'corrediza_3h_dvh' : 'corrediza_3h') : 'corrediza_3h',
+  banderola:      (l)=> l==='modena' ? 'banderola' : null,
+  oscilobatiente: (l)=> l==='modena' ? 'doble_contacto' : 'abrir_oscilobatiente',
+  brazo:          ()=>'proyectante',
+};
+function tipoCortes(linea, tipo, vidrio){
+  const f = MAPA_TIPOS[tipo];
+  const k = f ? f(linea, vidrio) : null;
+  return (k && DATA[linea] && DATA[linea].tipos[k]) ? k : null;
+}
+function abrirPres(){ irATab('pres'); }
+function cerrarPres(){ /* ya no hay ventana: es una pestaña */ }
+async function cargarPres(){
+  const box = document.getElementById('presTabla');
+  if(!presLista.length){ try{ const c = JSON.parse(localStorage.getItem('sisPresCache')||'null'); if(c && c.length){ presLista = c; renderPres(); } }catch(e){} }
+  if(!presLista.length) box.innerHTML = '<div class="note">Cargando…</div>';
+  try{
+    const r = await fetch(HUB_URL+'?action=list&t='+Date.now(), {redirect:'follow'});
+    const d = await r.json();
+    if(!d.ok) throw new Error(d.error);
+    presLista = d.presupuestos || [];
+    try{ localStorage.setItem('sisPresCache', JSON.stringify(presLista)); }catch(e){}
+    renderPres();
+  }catch(e){ box.innerHTML = '<div class="warn-box">No se pudo conectar con el Hub ('+esc(e.message)+')</div>'; }
+}
+function segVenta(num){
+  const v = ventasPorNum[num];
+  if(!v) return '<span class="muted">—</span>';
+  const a = ['<span class="badge '+(v.estadoEntrega==='Entregado'?'stock-retazo':'stock-barra')+'">'+esc(v.estadoEntrega||'No entregado')+'</span>'];
+  if(v.medidas && v.medidas!=='No hace falta') a.push('📏 '+esc(String(v.medidas).replace('Sí — ',''))+(v.medidasFecha?' '+esc(v.medidasFecha):''));
+  if(v.produccion && v.produccion!=='No iniciada') a.push('🏭 '+esc(v.produccion));
+  if(v.instalacion==='Con instalación') a.push('🔧 instalación');
+  if(v.estadoPago) a.push('💰 '+esc(v.estadoPago));
+  return '<div style="font-size:12px;line-height:1.6">'+a.join('<br>')+'</div>';
+}
+function renderPres(){
+  const q = (document.getElementById('presBuscar').value||'').toLowerCase().trim();
+  const todos = document.getElementById('presTodos').checked;
+  const guardadas = {}; obrasGuardadas.forEach(o=>{ guardadas[o.id] = o; });
+  const fmtF = iso => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('es-AR')+' '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}); };
+
+  // ---- VENTAS: presupuestos del Hub + obras de venta ya guardadas ----
+  let l = presLista.filter(p => todos ? p.estado!=='reservado' : p.estado==='vendido');
+  const enHub = new Set(l.map(p=>p.num));
+  obrasGuardadas.filter(o=>o.tipo==='venta' && o.presupuesto && !enHub.has(o.presupuesto)).forEach(o=>{
+    l.push({num:o.presupuesto, fecha:o.fecha, cliente:o.nombre, dir:o.direccion, localidad:'', items:[], estado:'vendido', soloGuardada:true});
+  });
+  if(q) l = l.filter(p => (String(p.num)+' '+String(p.cliente)).toLowerCase().includes(q));
+  l = l.slice().sort((a,b)=>String(b.num).localeCompare(String(a.num)));
+  const box = document.getElementById('presTabla');
+  if(!l.length){ box.innerHTML = '<div class="note">'+(todos?'No hay presupuestos guardados.':'No hay presupuestos vendidos todavía (marcalos como vendidos en el presupuestador, o tildá "mostrar también no vendidos").')+'</div>'; }
+  else box.innerHTML = '<table><thead><tr><th>N°</th><th>Fecha</th><th>Cliente</th><th>Dirección</th><th>Aberturas</th><th>Estado</th><th>Seguimiento (Ventas)</th><th>Obra</th><th></th></tr></thead><tbody>'+
+    l.map(p=>{
+      const g = guardadas[p.num];
+      const ab = g ? (g.orden||[]).length : (p.items||[]).filter(it=>it.custom && it.ancho && it.alto).length;
+      const obra = g ? '<span class="badge stock-retazo">✓ guardada</span><div class="muted" style="font-size:11px;margin-top:2px;">'+esc(fmtF(g.fecha))+'</div>' : '<span class="muted">sin cargar</span>';
+      let acc = '';
+      if(g){
+        acc += '<button class="primary" onclick="cargarObraGuardada(\''+esc(g.id)+'\')">Abrir</button> ';
+        if(!p.soloGuardada) acc += '<button class="ghost" title="Volver a armarla desde el presupuesto (pisa lo guardado)" onclick="cargarPresupuestoAObra(\''+esc(p.num)+'\')">↻</button> ';
+        acc += '<button class="danger" title="Quitar de las obras guardadas" onclick="eliminarObraGuardada(\''+esc(g.id)+'\')">🗑</button>';
+      } else {
+        acc = '<button class="primary" '+(ab?'':'disabled style="opacity:.4"')+' onclick="cargarPresupuestoAObra(\''+esc(p.num)+'\')">Cargar a la obra</button>';
+      }
+      return '<tr><td data-l="N°"><b>'+esc(p.num)+'</b></td><td data-l="Fecha">'+esc(String(p.fecha||'').slice(0,10))+'</td><td data-l="Cliente">'+esc(p.cliente||'—')+'</td><td data-l="Dirección">'+esc([p.dir,p.localidad].filter(Boolean).join(', '))+'</td><td data-l="Aberturas">'+ab+'</td>'+
+        '<td data-l="Estado"><span class="badge '+(p.estado==='vendido'?'stock-retazo':'stock-barra')+'">'+esc(p.estado)+(p.vendedor?' · '+esc(p.vendedor):'')+'</span></td><td data-l="Seguimiento">'+segVenta(p.num)+'</td><td data-l="Obra">'+obra+'</td><td class="acc" data-l="" style="text-align:right;white-space:nowrap;">'+acc+'</td></tr>';
+    }).join('')+'</tbody></table>';
+
+  // ---- A MANO: obras guardadas que no vienen de un presupuesto ----
+  const mano = obrasGuardadas.filter(o=>o.tipo==='mano' || (!o.tipo && !/^B-/.test(o.id)))
+    .sort((a,b)=>String(b.fecha||'').localeCompare(String(a.fecha||'')));
+  const mbox = document.getElementById('manoTabla');
+  if(!obrasConectado) mbox.innerHTML = '<div class="note">Conectando con la base compartida…</div>';
+  else if(!mano.length) mbox.innerHTML = '<div class="note">Todavía no hay obras a mano. Tocá "＋ Nueva obra a mano", ponele nombre y cargá las aberturas en la pestaña "＋ Abertura a mano": se guarda sola.</div>';
+  else mbox.innerHTML = '<table><thead><tr><th>Obra</th><th>Dirección</th><th>Aberturas</th><th>Última modificación</th><th></th></tr></thead><tbody>'+
+    mano.map(o=>'<tr><td data-l="Obra"><b>'+esc(o.nombre||'(sin nombre)')+'</b></td><td data-l="Dirección">'+esc(o.direccion||'')+'</td><td data-l="Aberturas">'+((o.orden||[]).length)+'</td><td data-l="Modificada">'+esc(fmtF(o.fecha))+'</td>'+
+      '<td class="acc" data-l="" style="text-align:right;white-space:nowrap;"><button class="primary" onclick="cargarObraGuardada(\''+esc(o.id)+'\')">Abrir</button> <button class="danger" title="Eliminar para todos" onclick="eliminarObraGuardada(\''+esc(o.id)+'\')">🗑</button></td></tr>').join('')+'</tbody></table>';
+}
+function cargarPresupuestoAObra(num){
+  const p = presLista.find(x=>x.num===num);
+  if(!p) return;
+  if(orden.length>0){
+    const actual = document.getElementById('obraNombre').value.trim() || 'la obra actual';
+    const n = orden.length;
+    if(!confirm('Ahora tenés '+n+' abertura'+(n>1?'s':'')+' cargada'+(n>1?'s':'')+' ('+actual+').\n\nAl cargar '+num+' se va a REEMPLAZAR toda la lista.\n\nSi querés conservar la actual, cancelá y tocá primero "Guardar esta obra".\n\n¿Reemplazar?')) return;
+  }
+  const nuevas = [];
+  const material = document.getElementById('presMaterial').value;
+  const COLORES = ['blanco','negro','anodizado'];
+  let cargadas = 0, sinCortes = [];
+  (p.items||[]).forEach((it, i)=>{
+    if(!it.custom || !it.ancho || !it.alto) return; // solo aberturas a medida
+    const linea = it.linea==='a30' ? 'a30' : 'modena';
+    const tipoKey = tipoCortes(linea, it.tipo, it.vidrio);
+    const opc = new Set(it.opc || ['premarco','contramarco','mosquitero']); // sin dato: todo incluido, como en el formulario
+    const A = Number(it.ancho), H = Number(it.alto), cantAb = Number(it.cantidad)||1;
+    let filas = [], tipoNombre = it.descripcion || it.tipo;
+    if(tipoKey){
+      const t = DATA[linea].tipos[tipoKey];
+      tipoNombre = t.nombre;
+      filas = t.piezas.filter(pz=>{
+        const g = piezaGrupo(pz.desc);
+        if(g==='premarco' && !opc.has('premarco')) return false;
+        if(g==='tapa_premarco' && !opc.has('contramarco')) return false;
+        if(g==='mosquitero' && !opc.has('mosquitero')) return false;
+        return true;
+      }).map(pz=>({...pz, medida:evalFormula(pz.formula,A,H), cantTotal:pz.cant*cantAb}));
+    } else {
+      sinCortes.push((it.descripcion||it.tipo));
+    }
+    nuevas.push({
+      linea, tipoKey: tipoKey || ('sin_cortes_'+it.tipo), tipoNombre, A, H, cantAb,
+      color: COLORES.includes(it.color) ? it.color : 'blanco', material, filas,
+      etiqueta: String(num).replace(/^B-0*/,'') + '-V' + (i+1),
+      piso:'', lado:'Frente', composicion: it.vidrio==='dvh' ? '4/9/4' : '', vidrioTipo: it.vidrio||'',
+      observacion:'', presupuesto: num
+    });
+    cargadas++;
+  });
+  if(!cargadas){ alert('Ese presupuesto no tiene aberturas a medida para cargar.'); return; }
+  orden = nuevas;
+  const nom = document.getElementById('obraNombre'), dir = document.getElementById('obraDireccion');
+  nom.value = (p.cliente||'') + ' · ' + num;
+  dir.value = [p.dir,p.localidad].filter(Boolean).join(', ');
+  actualizarObra();
+  filtroPerfilesOcultos.clear();
+  setObraActualId(num);
+  guardarOrdenActual();
+  document.getElementById('listaCount').textContent = '('+orden.length+')';
+  renderResumenCalc();
+  cerrarPres();
+  irATab('vidrios');
+  alert('Se cargaron '+cargadas+' abertura'+(cargadas>1?'s':'')+' de '+num+'.' + (sinCortes.length ? '\n\nSin cortes cargados todavía (solo vidrio): '+sinCortes.join(', ') : ''));
+}
+
+function actualizarPresActual(){
+  const el = document.getElementById('presActual'); if(!el) return;
+  const n = orden.length, nom = document.getElementById('obraNombre').value.trim();
+  el.innerHTML = n
+    ? 'Obra cargada: <b>'+esc(nom||'sin nombre')+'</b> — '+n+' abertura'+(n>1?'s':'')+' &nbsp; <button class="ghost" style="padding:4px 10px" onclick="irATab(\'vidrios\')">Ver vidrios</button> <button class="ghost" style="padding:4px 10px" onclick="irATab(\'lista\')">Ver lista de corte</button>'
+    : 'Todavía no cargaste ninguna obra: elegí un presupuesto vendido.';
+}
+
+(function ocultarPanelViejo(){
+  const l = document.getElementById('obrasGuardadasToggleLabel'); if(!l) return;
+  const fb = l.closest('.flex-between'); if(!fb) return;
+  fb.style.display = 'none'; if(fb.previousElementSibling) fb.previousElementSibling.style.display = 'none';
+})();
+
 // Restaurar la lista de corte en curso (por si se cerró/refrescó sin guardar). Las obras
 // guardadas se cargan solas apenas conecta el listener de Firebase, más arriba.
 cargarOrdenActual();
 document.getElementById('listaCount').textContent = orden.length? '('+orden.length+')':'';
 renderResumenCalc();
 renderObrasGuardadas();
+refrescarVidrios();
+cargarPres();
 </script>
 </body>
 </html>
