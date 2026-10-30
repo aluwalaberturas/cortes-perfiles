@@ -1834,14 +1834,11 @@ function renderPres(){
   const enLista = new Set();
 
   if(filtro === 'vendido' || filtro === 'todos'){
+    // Solo lo que está en la app de ventas determina "vendido"
     Object.entries(ventasAppPorNum).forEach(([num, v])=>{
       if(enLista.has(num)) return;
       l.push({num, fecha:v.fechaCompra||v.fecha||'', cliente:v.cliente||'—', dir:v.direccion||'', localidad:v.localidad||'', items:v.items||[], estado:'vendido', vendedor:v.vendedor||'', soloGuardada:true});
       enLista.add(num);
-    });
-    obrasGuardadas.filter(o=>o.tipo==='venta' && o.presupuesto && !enLista.has(o.presupuesto)).forEach(o=>{
-      l.push({num:o.presupuesto, fecha:o.fecha, cliente:o.nombre, dir:o.direccion, localidad:'', items:[], estado:'vendido', soloGuardada:true});
-      enLista.add(o.presupuesto);
     });
   }
   if(filtro === 'interno'){
