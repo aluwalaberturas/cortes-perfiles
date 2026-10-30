@@ -1824,8 +1824,9 @@ function renderPres(){
   });
   // Ventas de la app de control de ventas (colección Firebase 'ventas') que no están en el Hub
   const enLista = new Set(l.map(p=>p.num));
+  const pasaFiltro = (estado) => filtro==='todos' ? true : filtro==='vendido' ? estado==='vendido' : estado!=='vendido' && estado!=='reservado';
   Object.entries(ventasAppPorNum).forEach(([num, v])=>{
-    if(!enLista.has(num)){
+    if(!enLista.has(num) && pasaFiltro('vendido')){
       l.push({num, fecha:v.fechaCompra||v.fecha||'', cliente:v.cliente||'—', dir:v.direccion||'', localidad:v.localidad||'', items:v.items||[], estado:'vendido', vendedor:v.vendedor||'', soloGuardada:true});
       enLista.add(num);
     }
@@ -1833,7 +1834,9 @@ function renderPres(){
   // Presupuestos del cotizador web (clientes de todo el país)
   Object.entries(presWebPorNum).forEach(([num, v])=>{
     if(!enLista.has(num)){
-      l.push({num, fecha:v.fecha||'', cliente:v.cliente||'—', dir:'', localidad:'', items:v.items||[], estado:v.estado||'presupuesto', vendedor:'', soloGuardada:true});
+      const est = v.estado||'presupuesto';
+      if(!pasaFiltro(est)) return;
+      l.push({num, fecha:v.fecha||'', cliente:v.cliente||'—', dir:'', localidad:'', items:v.items||[], estado:est, vendedor:'', soloGuardada:true});
       enLista.add(num);
     }
   });
