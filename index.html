@@ -1143,6 +1143,17 @@ firebase.firestore().collection('ventas').onSnapshot(snap=>{
   if(typeof renderPres==='function') renderPres();
 });
 
+// Leer presupuestos del cotizador web (clientes de todo el país)
+let presWebPorNum = {};
+firebase.firestore().collection('presupuestos_web').onSnapshot(snap=>{
+  presWebPorNum = {};
+  snap.forEach(d=>{
+    const v = d.data();
+    if(v.num) presWebPorNum[String(v.num)] = v;
+  });
+  if(typeof renderPres==='function') renderPres();
+});
+
 let obrasGuardadas = []; // [{id, nombre, direccion, fecha, orden}], id = id de documento en Firestore
 let obrasConectado = false;
 
@@ -1797,6 +1808,14 @@ function renderPres(){
   Object.entries(ventasAppPorNum).forEach(([num, v])=>{
     if(!enLista.has(num)){
       l.push({num, fecha:v.fechaCompra||v.fecha||'', cliente:v.cliente||'—', dir:v.direccion||'', localidad:v.localidad||'', items:v.items||[], estado:'vendido', vendedor:v.vendedor||'', soloGuardada:true});
+      enLista.add(num);
+    }
+  });
+  // Presupuestos del cotizador web (clientes de todo el país)
+  Object.entries(presWebPorNum).forEach(([num, v])=>{
+    if(!enLista.has(num)){
+      l.push({num, fecha:v.fecha||'', cliente:v.cliente||'—', dir:'', localidad:'', items:v.items||[], estado:v.estado||'presupuesto', vendedor:'', soloGuardada:true});
+      enLista.add(num);
     }
   });
   if(q) l = l.filter(p => (String(p.num)+' '+String(p.cliente)).toLowerCase().includes(q));
@@ -1835,6 +1854,10 @@ function cargarPresupuestoAObra(num){
   if(!p && ventasAppPorNum[num]){
     const v = ventasAppPorNum[num];
     p = {num, cliente:v.cliente||'', dir:v.direccion||'', localidad:v.localidad||'', items:v.items||[], soloGuardada:true};
+  }
+  if(!p && presWebPorNum[num]){
+    const v = presWebPorNum[num];
+    p = {num, cliente:v.cliente||'', dir:'', localidad:'', items:v.items||[], soloGuardada:true};
   }
   if(!p) return;
   if(orden.length>0){
