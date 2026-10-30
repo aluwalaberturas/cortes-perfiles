@@ -1812,35 +1812,42 @@ function renderPres(){
   const guardadas = {}; obrasGuardadas.forEach(o=>{ guardadas[o.id] = o; });
   const fmtF = iso => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('es-AR')+' '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}); };
 
-  // ---- VENTAS: presupuestos del Hub + obras de venta ya guardadas ----
-  // Si un num existe en ventasAppPorNum o en obrasGuardadas como venta, se trata como vendido
-  const esVendidoReal = (num) => !!ventasAppPorNum[num] || obrasGuardadas.some(o=>o.tipo==='venta' && o.presupuesto===num);
-  const pasaFiltro = (estado) => filtro==='todos' ? true : filtro==='vendido' ? estado==='vendido' : estado!=='vendido' && estado!=='reservado';
-  let l = presLista.filter(p => {
-    const estado = esVendidoReal(p.num) ? 'vendido' : p.estado;
-    return pasaFiltro(estado);
-  }).map(p => esVendidoReal(p.num) ? {...p, estado:'vendido'} : p);
-  const enHub = new Set(l.map(p=>p.num));
-  obrasGuardadas.filter(o=>o.tipo==='venta' && o.presupuesto && !enHub.has(o.presupuesto) && pasaFiltro('vendido')).forEach(o=>{
-    l.push({num:o.presupuesto, fecha:o.fecha, cliente:o.nombre, dir:o.direccion, localidad:'', items:[], estado:'vendido', soloGuardada:true});
-  });
-  // Ventas de la app de control de ventas (colección Firebase 'ventas') que no están en el Hub
-  const enLista = new Set(l.map(p=>p.num));
-  Object.entries(ventasAppPorNum).forEach(([num, v])=>{
-    if(!enLista.has(num) && pasaFiltro('vendido')){
+  // ---- ARMADO DE LISTA SEGÚN FILTRO ----
+  // Vendidos = solo los que están en la app de ventas (Firebase 'ventas') u obrasGuardadas tipo venta
+  // Presupuestos = cotizador interno (presLista) + cotizador web (presWebPorNum) que NO están vendidos
+  // Todos = todo junto
+  const enVentas = new Set(Object.keys(ventasAppPorNum));
+  const enObrasVenta = new Set(obrasGuardadas.filter(o=>o.tipo==='venta' && o.presupuesto).map(o=>o.presupuesto));
+  let l = [];
+  const enLista = new Set();
+
+  if(filtro === 'vendido' || filtro === 'todos'){
+    // Ventas de la app
+    Object.entries(ventasAppPorNum).forEach(([num, v])=>{
+      if(enLista.has(num)) return;
       l.push({num, fecha:v.fechaCompra||v.fecha||'', cliente:v.cliente||'—', dir:v.direccion||'', localidad:v.localidad||'', items:v.items||[], estado:'vendido', vendedor:v.vendedor||'', soloGuardada:true});
       enLista.add(num);
-    }
-  });
-  // Presupuestos del cotizador web (clientes de todo el país)
-  Object.entries(presWebPorNum).forEach(([num, v])=>{
-    if(!enLista.has(num)){
-      const est = v.estado||'presupuesto';
-      if(!pasaFiltro(est)) return;
-      l.push({num, fecha:v.fecha||'', cliente:v.cliente||'—', dir:'', localidad:'', items:v.items||[], estado:est, vendedor:'', soloGuardada:true});
+    });
+    // Obras guardadas tipo venta no cubiertas por ventasAppPorNum
+    obrasGuardadas.filter(o=>o.tipo==='venta' && o.presupuesto && !enLista.has(o.presupuesto)).forEach(o=>{
+      l.push({num:o.presupuesto, fecha:o.fecha, cliente:o.nombre, dir:o.direccion, localidad:'', items:[], estado:'vendido', soloGuardada:true});
+      enLista.add(o.presupuesto);
+    });
+  }
+  if(filtro === 'presupuesto' || filtro === 'todos'){
+    // Cotizador interno (Sheets) — excluir los que ya están vendidos en la app de ventas
+    presLista.filter(p => p.estado!=='reservado' && !enVentas.has(p.num)).forEach(p=>{
+      if(enLista.has(p.num)) return;
+      l.push(p);
+      enLista.add(p.num);
+    });
+    // Cotizador web (Firebase) — excluir vendidos
+    Object.entries(presWebPorNum).forEach(([num, v])=>{
+      if(enLista.has(num) || enVentas.has(num)) return;
+      l.push({num, fecha:v.fecha||'', cliente:v.cliente||'—', dir:'', localidad:'', items:v.items||[], estado:v.estado||'presupuesto', vendedor:'', soloGuardada:true});
       enLista.add(num);
-    }
-  });
+    });
+  }
   if(q) l = l.filter(p => (String(p.num)+' '+String(p.cliente)).toLowerCase().includes(q));
   l = l.slice().sort((a,b)=>String(b.num).localeCompare(String(a.num)));
   const box = document.getElementById('presTabla');
