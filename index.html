@@ -1833,18 +1833,33 @@ function renderPres(){
       enLista.add(o.presupuesto);
     });
   }
-  if(filtro === 'interno' || filtro === 'todos'){
-    presLista.filter(p => p.estado!=='reservado' && !enVentas.has(p.num)).forEach(p=>{
-      if(enLista.has(p.num)) return;
-      l.push(p);
-      enLista.add(p.num);
+  if(filtro === 'interno'){
+    // Solo presupuestos del cotizador interno con ventanas a medida (guardados en Firebase con origen:'interno')
+    Object.entries(presWebPorNum).forEach(([num, v])=>{
+      if(enLista.has(num) || enVentas.has(num) || v.origen!=='interno') return;
+      l.push({num, fecha:v.fecha||'', cliente:v.cliente||'—', dir:'', localidad:'', items:v.items||[], estado:'presupuesto', vendedor:'', soloGuardada:true});
+      enLista.add(num);
     });
   }
-  if(filtro === 'web' || filtro === 'todos'){
+  if(filtro === 'web'){
+    // Solo presupuestos del cotizador web (clientes online)
+    Object.entries(presWebPorNum).forEach(([num, v])=>{
+      if(enLista.has(num) || enVentas.has(num) || v.origen==='interno') return;
+      l.push({num, fecha:v.fecha||'', cliente:v.cliente||'—', dir:'', localidad:'', items:v.items||[], estado:v.estado||'presupuesto', vendedor:'', soloGuardada:true});
+      enLista.add(num);
+    });
+  }
+  if(filtro === 'todos'){
+    // Todo: interno + web + presLista (Sheets)
     Object.entries(presWebPorNum).forEach(([num, v])=>{
       if(enLista.has(num) || enVentas.has(num)) return;
       l.push({num, fecha:v.fecha||'', cliente:v.cliente||'—', dir:'', localidad:'', items:v.items||[], estado:v.estado||'presupuesto', vendedor:'', soloGuardada:true});
       enLista.add(num);
+    });
+    presLista.filter(p => p.estado!=='reservado' && !enVentas.has(p.num)).forEach(p=>{
+      if(enLista.has(p.num)) return;
+      l.push(p);
+      enLista.add(p.num);
     });
   }
   if(q) l = l.filter(p => (String(p.num)+' '+String(p.cliente)).toLowerCase().includes(q));
