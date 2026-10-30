@@ -187,7 +187,8 @@
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
           <div style="display:flex;gap:2px;background:var(--panel2);border-radius:8px;padding:3px;">
             <button id="filtroVendidos" class="primary" style="font-size:12px;padding:5px 12px;border-radius:6px;" onclick="setFiltroEstado('vendido')">Vendidos</button>
-            <button id="filtroPresupuestos" class="ghost" style="font-size:12px;padding:5px 12px;border-radius:6px;" onclick="setFiltroEstado('presupuesto')">Presupuestos</button>
+            <button id="filtroInterno" class="ghost" style="font-size:12px;padding:5px 12px;border-radius:6px;" onclick="setFiltroEstado('interno')">Interno</button>
+            <button id="filtroWeb" class="ghost" style="font-size:12px;padding:5px 12px;border-radius:6px;" onclick="setFiltroEstado('web')">Web</button>
             <button id="filtroTodos" class="ghost" style="font-size:12px;padding:5px 12px;border-radius:6px;" onclick="setFiltroEstado('todos')">Todos</button>
           </div>
           <div class="field" style="min-width:0;"><select id="presMaterial" title="Material de los perfiles"><option value="aluar">Material: Aluar</option></select></div>
@@ -1796,11 +1797,11 @@ function segVenta(num){
 }
 function setFiltroEstado(f){
   window._filtroEstado = f;
-  ['filtroVendidos','filtroPresupuestos','filtroTodos'].forEach(id=>{
+  ['filtroVendidos','filtroInterno','filtroWeb','filtroTodos'].forEach(id=>{
     const el = document.getElementById(id);
     if(el) el.className = 'ghost';
   });
-  const map = {vendido:'filtroVendidos', presupuesto:'filtroPresupuestos', todos:'filtroTodos'};
+  const map = {vendido:'filtroVendidos', interno:'filtroInterno', web:'filtroWeb', todos:'filtroTodos'};
   const active = document.getElementById(map[f]);
   if(active) active.className = 'primary';
   renderPres();
@@ -1813,35 +1814,33 @@ function renderPres(){
   const fmtF = iso => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('es-AR')+' '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}); };
 
   // ---- ARMADO DE LISTA SEGÚN FILTRO ----
-  // Vendidos = solo los que están en la app de ventas (Firebase 'ventas') u obrasGuardadas tipo venta
-  // Presupuestos = cotizador interno (presLista) + cotizador web (presWebPorNum) que NO están vendidos
-  // Todos = todo junto
+  // Vendidos  = app de ventas (Firebase 'ventas') + obrasGuardadas tipo venta
+  // Interno   = cotizador interno (Sheets presLista) que NO están en ventas
+  // Web       = cotizador web (Firebase presWebPorNum) que NO están en ventas
+  // Todos     = todo junto
   const enVentas = new Set(Object.keys(ventasAppPorNum));
-  const enObrasVenta = new Set(obrasGuardadas.filter(o=>o.tipo==='venta' && o.presupuesto).map(o=>o.presupuesto));
   let l = [];
   const enLista = new Set();
 
   if(filtro === 'vendido' || filtro === 'todos'){
-    // Ventas de la app
     Object.entries(ventasAppPorNum).forEach(([num, v])=>{
       if(enLista.has(num)) return;
       l.push({num, fecha:v.fechaCompra||v.fecha||'', cliente:v.cliente||'—', dir:v.direccion||'', localidad:v.localidad||'', items:v.items||[], estado:'vendido', vendedor:v.vendedor||'', soloGuardada:true});
       enLista.add(num);
     });
-    // Obras guardadas tipo venta no cubiertas por ventasAppPorNum
     obrasGuardadas.filter(o=>o.tipo==='venta' && o.presupuesto && !enLista.has(o.presupuesto)).forEach(o=>{
       l.push({num:o.presupuesto, fecha:o.fecha, cliente:o.nombre, dir:o.direccion, localidad:'', items:[], estado:'vendido', soloGuardada:true});
       enLista.add(o.presupuesto);
     });
   }
-  if(filtro === 'presupuesto' || filtro === 'todos'){
-    // Cotizador interno (Sheets) — excluir los que ya están vendidos en la app de ventas
+  if(filtro === 'interno' || filtro === 'todos'){
     presLista.filter(p => p.estado!=='reservado' && !enVentas.has(p.num)).forEach(p=>{
       if(enLista.has(p.num)) return;
       l.push(p);
       enLista.add(p.num);
     });
-    // Cotizador web (Firebase) — excluir vendidos
+  }
+  if(filtro === 'web' || filtro === 'todos'){
     Object.entries(presWebPorNum).forEach(([num, v])=>{
       if(enLista.has(num) || enVentas.has(num)) return;
       l.push({num, fecha:v.fecha||'', cliente:v.cliente||'—', dir:'', localidad:'', items:v.items||[], estado:v.estado||'presupuesto', vendedor:'', soloGuardada:true});
@@ -1851,7 +1850,7 @@ function renderPres(){
   if(q) l = l.filter(p => (String(p.num)+' '+String(p.cliente)).toLowerCase().includes(q));
   l = l.slice().sort((a,b)=>String(b.num).localeCompare(String(a.num)));
   const box = document.getElementById('presTabla');
-  if(!l.length){ box.innerHTML = '<div class="note">'+(filtro==='vendido'?'No hay presupuestos vendidos todavía.':filtro==='presupuesto'?'No hay presupuestos sin vender.':'No hay presupuestos guardados.')+'</div>'; }
+  if(!l.length){ box.innerHTML = '<div class="note">'+(filtro==='vendido'?'No hay ventas registradas.':filtro==='interno'?'No hay presupuestos del cotizador interno.':filtro==='web'?'No hay presupuestos del cotizador web.':'No hay presupuestos guardados.')+'</div>'; }
   else box.innerHTML = '<table><thead><tr><th>N°</th><th>Fecha</th><th>Cliente</th><th>Dirección</th><th>Aberturas</th><th>Estado</th><th>Seguimiento (Ventas)</th><th>Obra</th><th></th></tr></thead><tbody>'+
     l.map(p=>{
       const g = guardadas[p.num];
