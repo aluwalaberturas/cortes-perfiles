@@ -1813,13 +1813,14 @@ function renderPres(){
   const fmtF = iso => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('es-AR')+' '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}); };
 
   // ---- VENTAS: presupuestos del Hub + obras de venta ya guardadas ----
-  let l = presLista.filter(p => {
-    if(filtro==='todos') return p.estado!=='reservado';
-    if(filtro==='vendido') return p.estado==='vendido';
-    return p.estado!=='vendido' && p.estado!=='reservado';
-  });
-  const enHub = new Set(l.map(p=>p.num));
+  // Si un num existe en ventasAppPorNum o en obrasGuardadas como venta, se trata como vendido
+  const esVendidoReal = (num) => !!ventasAppPorNum[num] || obrasGuardadas.some(o=>o.tipo==='venta' && o.presupuesto===num);
   const pasaFiltro = (estado) => filtro==='todos' ? true : filtro==='vendido' ? estado==='vendido' : estado!=='vendido' && estado!=='reservado';
+  let l = presLista.filter(p => {
+    const estado = esVendidoReal(p.num) ? 'vendido' : p.estado;
+    return pasaFiltro(estado);
+  }).map(p => esVendidoReal(p.num) ? {...p, estado:'vendido'} : p);
+  const enHub = new Set(l.map(p=>p.num));
   obrasGuardadas.filter(o=>o.tipo==='venta' && o.presupuesto && !enHub.has(o.presupuesto) && pasaFiltro('vendido')).forEach(o=>{
     l.push({num:o.presupuesto, fecha:o.fecha, cliente:o.nombre, dir:o.direccion, localidad:'', items:[], estado:'vendido', soloGuardada:true});
   });
