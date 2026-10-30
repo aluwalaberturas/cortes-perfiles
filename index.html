@@ -183,9 +183,13 @@
       </div>
       <div class="note" style="margin:0 0 14px;">Todo lo que cargues se guarda solo y lo ve cualquiera que abra la app.</div>
       <div class="flex-between" style="margin-bottom:8px;">
-        <h4 style="margin:0;">🏷️ Ventas <span class="muted" style="font-weight:400;font-size:12.5px;">(presupuestos vendidos)</span></h4>
+        <h4 style="margin:0;">🏷️ Presupuestos</h4>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <label class="check-label"><input type="checkbox" id="presTodos" onchange="renderPres()"> mostrar también no vendidos</label>
+          <div style="display:flex;gap:2px;background:var(--panel2);border-radius:8px;padding:3px;">
+            <button id="filtroVendidos" class="primary" style="font-size:12px;padding:5px 12px;border-radius:6px;" onclick="setFiltroEstado('vendido')">Vendidos</button>
+            <button id="filtroPresupuestos" class="ghost" style="font-size:12px;padding:5px 12px;border-radius:6px;" onclick="setFiltroEstado('presupuesto')">Presupuestos</button>
+            <button id="filtroTodos" class="ghost" style="font-size:12px;padding:5px 12px;border-radius:6px;" onclick="setFiltroEstado('todos')">Todos</button>
+          </div>
           <div class="field" style="min-width:0;"><select id="presMaterial" title="Material de los perfiles"><option value="aluar">Material: Aluar</option></select></div>
           <button class="ghost" onclick="cargarPres()">↻ Actualizar</button>
         </div>
@@ -1790,14 +1794,30 @@ function segVenta(num){
   if(v.producto) a.push('📦 '+esc(v.producto));
   return '<div style="font-size:12px;line-height:1.6">'+a.join('<br>')+'</div>';
 }
+function setFiltroEstado(f){
+  window._filtroEstado = f;
+  ['filtroVendidos','filtroPresupuestos','filtroTodos'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.className = 'ghost';
+  });
+  const map = {vendido:'filtroVendidos', presupuesto:'filtroPresupuestos', todos:'filtroTodos'};
+  const active = document.getElementById(map[f]);
+  if(active) active.className = 'primary';
+  renderPres();
+}
+
 function renderPres(){
   const q = (document.getElementById('presBuscar').value||'').toLowerCase().trim();
-  const todos = document.getElementById('presTodos').checked;
+  const filtro = window._filtroEstado || 'vendido';
   const guardadas = {}; obrasGuardadas.forEach(o=>{ guardadas[o.id] = o; });
   const fmtF = iso => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('es-AR')+' '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}); };
 
   // ---- VENTAS: presupuestos del Hub + obras de venta ya guardadas ----
-  let l = presLista.filter(p => todos ? p.estado!=='reservado' : p.estado==='vendido');
+  let l = presLista.filter(p => {
+    if(filtro==='todos') return p.estado!=='reservado';
+    if(filtro==='vendido') return p.estado==='vendido';
+    return p.estado!=='vendido' && p.estado!=='reservado';
+  });
   const enHub = new Set(l.map(p=>p.num));
   obrasGuardadas.filter(o=>o.tipo==='venta' && o.presupuesto && !enHub.has(o.presupuesto)).forEach(o=>{
     l.push({num:o.presupuesto, fecha:o.fecha, cliente:o.nombre, dir:o.direccion, localidad:'', items:[], estado:'vendido', soloGuardada:true});
@@ -1820,7 +1840,7 @@ function renderPres(){
   if(q) l = l.filter(p => (String(p.num)+' '+String(p.cliente)).toLowerCase().includes(q));
   l = l.slice().sort((a,b)=>String(b.num).localeCompare(String(a.num)));
   const box = document.getElementById('presTabla');
-  if(!l.length){ box.innerHTML = '<div class="note">'+(todos?'No hay presupuestos guardados.':'No hay presupuestos vendidos todavía (marcalos como vendidos en el presupuestador, o tildá "mostrar también no vendidos").')+'</div>'; }
+  if(!l.length){ box.innerHTML = '<div class="note">'+(filtro==='vendido'?'No hay presupuestos vendidos todavía.':filtro==='presupuesto'?'No hay presupuestos sin vender.':'No hay presupuestos guardados.')+'</div>'; }
   else box.innerHTML = '<table><thead><tr><th>N°</th><th>Fecha</th><th>Cliente</th><th>Dirección</th><th>Aberturas</th><th>Estado</th><th>Seguimiento (Ventas)</th><th>Obra</th><th></th></tr></thead><tbody>'+
     l.map(p=>{
       const g = guardadas[p.num];
