@@ -1819,12 +1819,12 @@ function renderPres(){
     return p.estado!=='vendido' && p.estado!=='reservado';
   });
   const enHub = new Set(l.map(p=>p.num));
-  obrasGuardadas.filter(o=>o.tipo==='venta' && o.presupuesto && !enHub.has(o.presupuesto)).forEach(o=>{
+  const pasaFiltro = (estado) => filtro==='todos' ? true : filtro==='vendido' ? estado==='vendido' : estado!=='vendido' && estado!=='reservado';
+  obrasGuardadas.filter(o=>o.tipo==='venta' && o.presupuesto && !enHub.has(o.presupuesto) && pasaFiltro('vendido')).forEach(o=>{
     l.push({num:o.presupuesto, fecha:o.fecha, cliente:o.nombre, dir:o.direccion, localidad:'', items:[], estado:'vendido', soloGuardada:true});
   });
   // Ventas de la app de control de ventas (colección Firebase 'ventas') que no están en el Hub
   const enLista = new Set(l.map(p=>p.num));
-  const pasaFiltro = (estado) => filtro==='todos' ? true : filtro==='vendido' ? estado==='vendido' : estado!=='vendido' && estado!=='reservado';
   Object.entries(ventasAppPorNum).forEach(([num, v])=>{
     if(!enLista.has(num) && pasaFiltro('vendido')){
       l.push({num, fecha:v.fechaCompra||v.fecha||'', cliente:v.cliente||'—', dir:v.direccion||'', localidad:v.localidad||'', items:v.items||[], estado:'vendido', vendedor:v.vendedor||'', soloGuardada:true});
