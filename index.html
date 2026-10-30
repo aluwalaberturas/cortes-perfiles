@@ -185,7 +185,7 @@
         <h4 style="margin:0;">🏷️ Ventas <span class="muted" style="font-weight:400;font-size:12.5px;">(presupuestos vendidos)</span></h4>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
           <label class="check-label"><input type="checkbox" id="presTodos" onchange="renderPres()"> mostrar también no vendidos</label>
-          <div class="field" style="min-width:0;"><select id="presMaterial" title="Material de los perfiles"><option value="virgen">Material: Virgen</option><option value="reciclado">Material: Reciclado</option><option value="tocho">Material: Tocho</option></select></div>
+          <div class="field" style="min-width:0;"><select id="presMaterial" title="Material de los perfiles"><option value="aluar">Material: Aluar</option></select></div>
           <button class="ghost" onclick="cargarPres()">↻ Actualizar</button>
         </div>
       </div>
@@ -238,9 +238,7 @@
         <div class="field">
           <label>Material</label>
           <select id="materialPerfil">
-            <option value="virgen">Virgen</option>
-            <option value="reciclado">Reciclado</option>
-            <option value="tocho">Tocho</option>
+            <option value="aluar">Aluar</option>
           </select>
         </div>
         <div class="field">
@@ -977,7 +975,7 @@ function colorLabel(c){
 // Origen/calidad del aluminio (virgen / reciclado / tocho) — aparte del color, porque dos
 // barras del mismo perfil y color pueden ser de distinta calidad de material.
 function materialLabel(m){
-  const map = {virgen:'✨ Virgen', reciclado:'♻️ Reciclado', tocho:'🔩 Tocho'};
+  const map = {aluar:'Aluar', virgen:'Aluar', reciclado:'Aluar', tocho:'Aluar'};
   return map[m] || m || '';
 }
 
