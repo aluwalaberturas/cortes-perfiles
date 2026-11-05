@@ -474,7 +474,7 @@ const DATA = {
       },
       corrediza_3h: {
         nombre: "Puerta corrediza — 3 hojas, vidrio simple (puerta balcón)",
-        nota: "Verificado en el catálogo Aluar (pág. \"ventana y puerta corrediza\", columna PC3H) — se usan los valores de puerta para todo, sin separar ventana. Se unificó \"parante central\" y \"parante central con tirador\" en una sola pieza (4 en total). La jamba de tapa premarco no tiene fórmula fija (\"(•) medir en la abertura armada\") — medila en obra. El travesaño de mosquitero no tenía cantidad confirmada para 3 hojas en la tabla, así que no está incluido acá — confirmalo antes de cortar si lleva mosquitero.",
+        nota: "Verificado en el catálogo Aluar (pág. \"ventana y puerta corrediza\", columna PC3H) — se usan los valores de puerta para todo, sin separar ventana. Se unificó \"parante central\" y \"parante central con tirador\" en una sola pieza (4 en total). La jamba de tapa premarco no tiene fórmula fija (\"(•) medir en la abertura armada\") — medila en obra. El travesaño de mosquitero no tenía cantidad confirmada para 3 hojas en la tabla, así que no está incluido acá — confirmalo antes de cortar si lleva mosquitero. El mosquitero de 3 hojas no figura en el catálogo Aluar (columnas VC3H/PC3H vacías en el 6255): el alto (H-88) sale de la fórmula de 2 hojas y el ancho ((A/3)+10) está deducido, no es dato de Aluar — confirmalo con un mosquitero armado.",
         piezas: [
           {perfil:"6205", desc:"Jambas premarco", formula:"H+36", angulo:"45-45", cant:2},
           {perfil:"6205", desc:"Umbral y dintel premarco", formula:"A+36", angulo:"45-45", cant:2},
@@ -488,12 +488,12 @@ const DATA = {
           {perfil:"6209", desc:"Zócalo alto (laterales)", formula:"(A/3)-7", angulo:"90-90", cant:2},
           {perfil:"6209", desc:"Zócalo alto (central)", formula:"(A/3)+1", angulo:"90-90", cant:1},
           {perfil:"6255", desc:"Jambas mosquitero", formula:"H-88", angulo:"45-45", cant:2},
-          {perfil:"6255", desc:"Zócalo y cabezal mosquitero", formula:"(A/2)-7", angulo:"45-45", cant:2},
+          {perfil:"6255", desc:"Zócalo y cabezal mosquitero", formula:"(A/3)+10", angulo:"45-45", cant:2},
         ]
       },
       corrediza_3h_dvh: {
         nombre: "Puerta corrediza — 3 hojas, DVH (puerta balcón)",
-        nota: "Mismos cortes que la versión de vidrio simple, solo cambian los perfiles de hoja a DVH (6248/6250/6249/6252/6253). Premarco, tapa premarco, marco de 3 guías y mosquitero usan el mismo perfil que la de vidrio simple. La jamba de tapa premarco no tiene fórmula fija — medila en obra.",
+        nota: "Mismos cortes que la versión de vidrio simple, solo cambian los perfiles de hoja a DVH (6248/6250/6249/6252/6253). Premarco, tapa premarco, marco de 3 guías y mosquitero usan el mismo perfil que la de vidrio simple. La jamba de tapa premarco no tiene fórmula fija — medila en obra. El mosquitero de 3 hojas no figura en el catálogo Aluar (columnas VC3H/PC3H vacías en el 6255): el alto (H-88) sale de la fórmula de 2 hojas y el ancho ((A/3)+10) está deducido, no es dato de Aluar — confirmalo con un mosquitero armado.",
         piezas: [
           {perfil:"6205", desc:"Jambas premarco", formula:"H+36", angulo:"45-45", cant:2},
           {perfil:"6205", desc:"Umbral y dintel premarco", formula:"A+36", angulo:"45-45", cant:2},
@@ -507,7 +507,7 @@ const DATA = {
           {perfil:"6252", desc:"Zócalo alto DVH (laterales)", formula:"(A/3)-7", angulo:"90-90", cant:2},
           {perfil:"6252", desc:"Zócalo alto DVH (central)", formula:"(A/3)+1", angulo:"90-90", cant:1},
           {perfil:"6255", desc:"Jambas mosquitero", formula:"H-88", angulo:"45-45", cant:2},
-          {perfil:"6255", desc:"Zócalo y cabezal mosquitero", formula:"(A/2)-7", angulo:"45-45", cant:2},
+          {perfil:"6255", desc:"Zócalo y cabezal mosquitero", formula:"(A/3)+10", angulo:"45-45", cant:2},
         ]
       },
       abrir_camara: {
