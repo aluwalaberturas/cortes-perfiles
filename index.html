@@ -1818,6 +1818,27 @@ function setFiltroEstado(f){
   renderPres();
 }
 
+// Aberturas a medida de un presupuesto: si la venta (Control de ventas) no trae el detalle, se busca en el presupuesto guardado (web / interno / Sheets)
+function itemsPres(num, base){
+  const ok = a => (a||[]).some(it=>it && it.custom && it.ancho && it.alto);
+  if(ok(base)) return base;
+  if(presWebPorNum[num] && ok(presWebPorNum[num].items)) return presWebPorNum[num].items;
+  const p = presLista.find(x=>x.num===num);
+  if(p && ok(p.items)) return p.items;
+  return base || [];
+}
+const TIPO_LBL = {corrediza:'Corrediza 2H', corrediza3:'Corrediza 3H', corrediza4:'Corrediza 4H', pano:'Paño fijo', banderola:'Banderola', brazo:'Brazo de empuje', raja:'Raja', oscilobatiente:'Oscilobatiente', patagonica:'Patagónica', puerta:'Puerta', puertaMed:'Puerta V.Entero'};
+const VIDRIO_LBL = {simple:'Simple', dvh:'DVH', '33':'Laminado 3+3', laminado:'Laminado'};
+function resumenAberturas(items){
+  const a = (items||[]).filter(it=>it.custom && it.ancho && it.alto);
+  if(!a.length) return '<span class="muted">0</span>';
+  return '<div style="font-size:12px;line-height:1.55;white-space:nowrap"><b>'+a.length+'</b><br>'+a.map(it=>{
+    const lin = it.linea==='a30' ? 'A·30' : it.linea==='modena' ? 'Módena' : 'línea s/d';
+    const vid = VIDRIO_LBL[it.vidrio] || it.vidrio || '';
+    return esc(lin+' · '+(TIPO_LBL[it.tipo]||it.tipo)+' · '+it.ancho+'×'+it.alto+' · '+(it.color||'')+(vid?' · '+vid:'')+((Number(it.cantidad)||1)>1?' · ×'+it.cantidad:''));
+  }).join('<br>')+'</div>';
+}
+
 function renderPres(){
   const q = (document.getElementById('presBuscar').value||'').toLowerCase().trim();
   const filtro = window._filtroEstado || 'vendido';
@@ -1837,7 +1858,7 @@ function renderPres(){
     // Solo lo que está en la app de ventas determina "vendido"
     Object.entries(ventasAppPorNum).forEach(([num, v])=>{
       if(enLista.has(num)) return;
-      l.push({num, fecha:v.fechaCompra||v.fecha||'', cliente:v.cliente||'—', dir:v.direccion||'', localidad:v.localidad||'', items:v.items||[], estado:'vendido', vendedor:v.vendedor||'', soloGuardada:true});
+      l.push({num, fecha:v.fechaCompra||v.fecha||'', cliente:v.cliente||'—', dir:v.direccion||'', localidad:v.localidad||'', items:itemsPres(num, v.items), estado:'vendido', vendedor:v.vendedor||'', soloGuardada:true});
       enLista.add(num);
     });
   }
@@ -1877,7 +1898,7 @@ function renderPres(){
   else box.innerHTML = '<table><thead><tr><th>N°</th><th>Fecha</th><th>Cliente</th><th>Dirección</th><th>Aberturas</th><th>Estado</th><th>Seguimiento (Ventas)</th><th>Obra</th><th></th></tr></thead><tbody>'+
     l.map(p=>{
       const g = guardadas[p.num];
-      const ab = g ? (g.orden||[]).length : (p.items||[]).filter(it=>it.custom && it.ancho && it.alto).length;
+      const ab = g ? (g.orden||[]).length : itemsPres(p.num, p.items).filter(it=>it.custom && it.ancho && it.alto).length;
       const obra = g ? '<span class="badge stock-retazo">✓ guardada</span><div class="muted" style="font-size:11px;margin-top:2px;">'+esc(fmtF(g.fecha))+'</div>' : '<span class="muted">sin cargar</span>';
       let acc = '';
       if(g){
@@ -1887,7 +1908,7 @@ function renderPres(){
       } else {
         acc = '<button class="primary" '+(ab?'':'disabled style="opacity:.4"')+' onclick="cargarPresupuestoAObra(\''+esc(p.num)+'\')">Cargar a la obra</button>';
       }
-      return '<tr><td data-l="N°"><b>'+esc(p.num)+'</b></td><td data-l="Fecha">'+esc(String(p.fecha||'').slice(0,10))+'</td><td data-l="Cliente">'+esc(p.cliente||'—')+'</td><td data-l="Dirección">'+esc([p.dir,p.localidad].filter(Boolean).join(', '))+'</td><td data-l="Aberturas">'+ab+'</td>'+
+      return '<tr><td data-l="N°"><b>'+esc(p.num)+'</b></td><td data-l="Fecha">'+esc(String(p.fecha||'').slice(0,10))+'</td><td data-l="Cliente">'+esc(p.cliente||'—')+'</td><td data-l="Dirección">'+esc([p.dir,p.localidad].filter(Boolean).join(', '))+'</td><td data-l="Aberturas">'+(g ? ab : resumenAberturas(itemsPres(p.num, p.items)))+'</td>'+
         '<td data-l="Estado"><span class="badge '+(p.estado==='vendido'?'stock-retazo':'stock-barra')+'">'+esc(p.estado)+(p.vendedor?' · '+esc(p.vendedor):'')+'</span></td><td data-l="Seguimiento">'+segVenta(p.num)+'</td><td data-l="Obra">'+obra+'</td><td class="acc" data-l="" style="text-align:right;white-space:nowrap;">'+acc+'</td></tr>';
     }).join('')+'</tbody></table>';
 
@@ -1905,7 +1926,7 @@ function cargarPresupuestoAObra(num){
   let p = presLista.find(x=>x.num===num);
   if(!p && ventasAppPorNum[num]){
     const v = ventasAppPorNum[num];
-    p = {num, cliente:v.cliente||'', dir:v.direccion||'', localidad:v.localidad||'', items:v.items||[], soloGuardada:true};
+    p = {num, cliente:v.cliente||'', dir:v.direccion||'', localidad:v.localidad||'', items:itemsPres(num, v.items), soloGuardada:true};
   }
   if(!p && presWebPorNum[num]){
     const v = presWebPorNum[num];
