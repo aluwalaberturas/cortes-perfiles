@@ -1684,7 +1684,7 @@ function actualizarObra(){
 // Fórmulas por "línea|tipo" (mm). ancho/alto = medida de cada vidrio; cant = vidrios por abertura.
 // Solo están las combinaciones calibradas con medidas reales; el resto muestra "sin fórmula".
 const VIDRIO_FORMULAS = {
-  'modena|corrediza_dvh': (a,h)=>({ancho:a/2-73,  alto:h-165, cant:2}),   // Modena DVH 2 hojas
+  'modena|corrediza':     (a,h)=>({ancho:a/2-73,  alto:h-165, cant:2}),   // Modena DVH 2 hojas (vale para corrediza y corrediza_dvh)
   'modena|paño_fijo':     (a,h)=>({ancho:a-57,    alto:h-57,  cant:1}),   // Modena DVH paño fijo
   'a30|corrediza':        (a,h)=>({ancho:a/2-100, alto:h-185, cant:2}),   // A30 DVH 2 hojas
   'a30|corrediza_3h':     (a,h)=>({ancho:a/3-82,  alto:h-238, cant:3}),   // A30 DVH 3 hojas
@@ -1693,9 +1693,11 @@ const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&
 
 // null = sin fórmula · {invalido:true} = medidas absurdas · si no, {ancho, alto, cant (total), porAbertura}
 function vidrioDe(item){
-  const f = VIDRIO_FORMULAS[item.linea+'|'+item.tipoKey];
+  // el tipo "_dvh" usa la misma fórmula que su tipo base (los cortes son iguales, solo cambia el perfil)
+  const f = VIDRIO_FORMULAS[item.linea+'|'+item.tipoKey] || VIDRIO_FORMULAS[item.linea+'|'+String(item.tipoKey).replace(/_dvh$/,'')];
   if(!f) return null;
-  if(item.vidrioTipo && item.vidrioTipo!=='dvh') return null; // las fórmulas son solo para DVH
+  // las fórmulas están calibradas en DVH; Módena corrediza 2 hojas usa la misma medida con cualquier vidrio (mismos cortes de hoja)
+  if(item.vidrioTipo && item.vidrioTipo!=='dvh' && !(item.linea==='modena' && /^corrediza(_dvh)?$/.test(item.tipoKey))) return null;
   const v = f(item.A, item.H);
   const ancho = Math.round(v.ancho), alto = Math.round(v.alto);
   if(ancho<100 || alto<100) return {invalido:true};
@@ -1968,7 +1970,7 @@ function cargarPresupuestoAObra(num){
       linea, tipoKey: tipoKey || ('sin_cortes_'+it.tipo), tipoNombre, A, H, cantAb,
       color: COLORES.includes(it.color) ? it.color : 'blanco', material, filas,
       etiqueta: String(num).replace(/^B-0*/,'') + '-V' + (i+1),
-      piso:'', lado:'Frente', composicion: it.vidrio==='dvh' ? '4/9/4' : '', vidrioTipo: it.vidrio||'',
+      piso:'', lado:'Frente', composicion: it.vidrio==='dvh' ? '4/9/4' : (it.vidrio==='33' ? 'laminado 3+3' : (it.vidrio ? 'V4mm' : '')), vidrioTipo: it.vidrio||'',
       observacion:'', presupuesto: num
     });
     cargadas++;
